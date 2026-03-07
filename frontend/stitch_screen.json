@@ -1,0 +1,31 @@
+{
+  "screenshot": {
+    "name": "projects/17674216258957404187/files/04a70dc895e3495b9943343b9c15bf4b",
+    "downloadUrl": "https://lh3.googleusercontent.com/aida/AOfcidUO7YBKd6QT0WpqLYNmB_RSYE4lUzGt9VIAqdpjvU1OJ0nTV4Izzr9blGN-DCFbGO9g50c9-0mocix8MrC7K8Y1lc9-tT_1addBY7ylGaCQaHutMU3hKYGiWrKZToYSKz9RROXKFv-E5eJO8_gdbdZ-I9KOVUbZbfU9h8ic14ygaPH-z17p74SRcqAO0t9lgKlr-24-cTV8bj-l2I03BDmuV9n4JuiWQUwKY_VSVzwqXd4gxa1TSkwRrNc"
+  },
+  "htmlCode": {
+    "name": "projects/17674216258957404187/files/bffd53c5f83e4dfb9d2253f00e539b0b",
+    "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzc5MThjNjMyNmE2YTQwNjQ4NjA5Y2MzOGRlMzQ0NWZhEgsSBxCF1cLAxQYYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzY3NDIxNjI1ODk1NzQwNDE4Nw&filename=&opi=89354086",
+    "mimeType": "text/html"
+  },
+  "id": "23cff29c8a0541b5bc1043d5da5c1ca7",
+  "generatedBy": "HatterAgent",
+  "width": "2560",
+  "height": "2048",
+  "title": "MindPop Refined Welcome Page",
+  "prompt": "On screen {{DATA:SCREEN:SCREEN_8}}:\n1. In the navbar, add the text \"MindPop\" in a bold, neobrutalist font (Space Grotesk, black) immediately to the right of the logo image.\n2. Update the word search puzzle (crossword): \n   - Ensure letters are more scattered and less uniform.\n   - Replace or add 'fancy' educational words if appropriate, but keep the core highlights sharp-edged. \n   - Ensure the words \"BRAIN\", \"THINK\", \"POP\", \"LEARN\", and \"GROW\" are highlighted with sharp-edged rectangular backgrounds of different colors (blue, yellow, pink, etc.) with low opacity.\n3. Add more background decorative elements (icons of books, pencils, lightbulbs, graduation caps) across both the beige and orange sections. These should be very low opacity and have a subtle floating animation.\n4. Maintain the 60/40 beige/orange split and the neobrutalist aesthetic (thick black borders, no rounded corners).",
+  "name": "projects/17674216258957404187/screens/23cff29c8a0541b5bc1043d5da5c1ca7",
+  "theme": {
+    "colorMode": "LIGHT",
+    "font": "SPACE_GROTESK",
+    "roundness": "ROUND_FOUR",
+    "customColor": "#f48c25",
+    "saturation": 3
+  },
+  "deviceType": "DESKTOP",
+  "screenType": "DESIGN",
+  "screenMetadata": {
+    "agentType": "HATTER_AGENT",
+    "status": "COMPLETE"
+  }
+}
