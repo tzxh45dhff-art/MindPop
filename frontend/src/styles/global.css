@@ -323,3 +323,10 @@ body {
     transform: scale(1.15);
   }
 }
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+.animate-scanline {
+  animation: scanline 3s linear infinite;
+}

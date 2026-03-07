@@ -11,6 +11,8 @@ import {
     isElevenLabsConfigured,
     speakWithElevenLabs,
 } from '../services/aiService';
+import { saveVideoLesson, getUserVideoLessons, deleteVideoLesson } from '../services/firebaseService';
+import { generateVideoScript, createVideoProject, pollVideoStatus } from '../services/videoService';
 import '../styles/global.css';
 
 /* ─── Constants ─── */
@@ -63,6 +65,18 @@ const AiAgent = ({ user, onNavigate }) => {
     const [quizTopicInput, setQuizTopicInput] = useState('');
     const [quizLoading, setQuizLoading] = useState(false);
     const [quizFinished, setQuizFinished] = useState(false);
+
+    /* Video Lessons State */
+    const [videoLibraryActive, setVideoLibraryActive] = useState(false);
+    const [videoLessons, setVideoLessons] = useState([]);
+    const [videoLibraryLoading, setVideoLibraryLoading] = useState(false);
+
+    // Video Generation State
+    const [videoGenActive, setVideoGenActive] = useState(false);
+    const [videoTopicInput, setVideoTopicInput] = useState('');
+    const [videoGenStep, setVideoGenStep] = useState(0); // 0: input, 1: generating script, 2: rendering, 3: done
+    const [videoGenProgress, setVideoGenProgress] = useState({ status: '', attempts: 0 });
+    const [currentVideoUrl, setCurrentVideoUrl] = useState(null);
 
     const messagesEndRef = useRef(null);
     const chatContainerRef = useRef(null);
@@ -202,13 +216,32 @@ const AiAgent = ({ user, onNavigate }) => {
         const currentMime = imageMime;
         setImagePreview(null);
         setImageData(null);
+        if (recognitionRef.current) {
+            recognitionRef.current.stop();
+        }
+
+        // --- NEW: Detect Video Generation Request ---
+        const videoKeywords = ['video', 'generate video', 'make a video', 'create a video', 'video lesson', 'show me a video'];
+        const isVideoRequest = videoKeywords.some(kw => text.toLowerCase().includes(kw));
+
+        if (isVideoRequest) {
+            // If user asks for a video, we trigger the video generation flow instead of normal chat
+            setVideoTopicInput(text.replace(/generate|video|lesson|make|create|a|show|me|/gi, '').trim());
+            setVideoLibraryActive(true);
+            setVideoGenActive(true);
+            // We still send the message to chat so the AI acknowledges it
+        }
+
         setIsLoading(true);
 
         try {
             const reply = await sendMessage(text, currentImage, currentMime);
             const aiMsg = { role: 'model', text: reply };
             setMessages((prev) => [...prev, aiMsg]);
-            speakText(reply);
+            stopSpeaking(); // Stop any ongoing speech before speaking the new reply
+            if (outputMode !== 'text') { // Only speak if outputMode is not 'text'
+                speakText(reply);
+            }
         } catch (err) {
             setMessages((prev) => [
                 ...prev,
@@ -400,6 +433,73 @@ const AiAgent = ({ user, onNavigate }) => {
         return { emoji: '🔥', msg: 'Keep going! Every mistake is a learning opportunity!' };
     };
 
+    /* ─── Video Lesson Handlers ─── */
+
+    const handleOpenVideoLibrary = async () => {
+        setVideoLibraryActive(true);
+        setVideoLibraryLoading(true);
+        try {
+            const lessons = await getUserVideoLessons();
+            setVideoLessons(lessons);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setVideoLibraryLoading(false);
+        }
+    };
+
+    const handleDeleteVideo = async (docId) => {
+        if (!window.confirm("Delete this video lesson?")) return;
+        try {
+            await deleteVideoLesson(docId);
+            setVideoLessons(prev => prev.filter(v => v.id !== docId));
+        } catch (err) {
+            alert("Failed to delete video.");
+        }
+    };
+
+    const handleStartVideoGeneration = async () => {
+        if (!videoTopicInput.trim() && !selectedSubject) return;
+        setVideoGenStep(1); // Script generation
+        try {
+            // 1. Generate Script
+            const payload = await generateVideoScript(selectedSubject, selectedTopic, videoTopicInput.trim());
+
+            // 2. Start Project
+            setVideoGenStep(2); // Rendering
+            const projectId = await createVideoProject(payload);
+
+            // 3. Poll
+            const finalUrl = await pollVideoStatus(projectId, (status, attempts) => {
+                setVideoGenProgress({ status, attempts });
+            });
+
+            // 4. Save to Firebase
+            const title = videoTopicInput.trim() || `${selectedSubject || 'General'} Lesson`;
+            await saveVideoLesson(selectedTopic || selectedSubject || 'General', title, finalUrl, projectId);
+
+            // 5. Show Video
+            setCurrentVideoUrl(finalUrl);
+            setVideoGenStep(3); // Done
+
+            // Refresh library in background
+            const lessons = await getUserVideoLessons();
+            setVideoLessons(lessons);
+
+        } catch (err) {
+            alert(err.message || 'Failed to generate video.');
+            setVideoGenStep(0);
+        }
+    };
+
+    const handleCloseVideoGen = () => {
+        setVideoGenActive(false);
+        setVideoGenStep(0);
+        setVideoTopicInput('');
+        setCurrentVideoUrl(null);
+        setVideoGenProgress({ status: '', attempts: 0 });
+    };
+
     /* ─── Quiz Overlay Renderer ─── */
 
     const renderQuizOverlay = () => {
@@ -408,7 +508,7 @@ const AiAgent = ({ user, onNavigate }) => {
         // Step 1: Topic Input
         if (!quizData && !quizLoading) {
             return (
-                <div className="fixed inset-0 bg-gray-950/95 z-50 flex items-center justify-center p-6" style={{ backdropFilter: 'blur(8px)' }}>
+                <div className="fixed inset-0 bg-gray-950/95 z-[200] flex items-center justify-center p-6" style={{ backdropFilter: 'blur(8px)' }}>
                     <div className="w-full max-w-lg animate-slideUp">
                         <div className="bg-gray-900 border-[4px] border-purple-500 p-8 shadow-[8px_8px_0px_0px_rgba(168,85,247,0.5)]">
                             <button onClick={handleQuizClose} className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold">✕</button>
@@ -449,7 +549,7 @@ const AiAgent = ({ user, onNavigate }) => {
         // Step 2: Loading
         if (quizLoading) {
             return (
-                <div className="fixed inset-0 bg-gray-950/95 z-50 flex items-center justify-center" style={{ backdropFilter: 'blur(8px)' }}>
+                <div className="fixed inset-0 bg-gray-950/95 z-[200] flex items-center justify-center" style={{ backdropFilter: 'blur(8px)' }}>
                     <div className="text-center animate-slideUp">
                         <div className="text-6xl mb-4 quiz-pulse-anim">🧠</div>
                         <p className="text-white font-black text-lg uppercase tracking-widest">Generating Quiz...</p>
@@ -468,7 +568,7 @@ const AiAgent = ({ user, onNavigate }) => {
         if (quizFinished && quizData) {
             const { emoji, msg } = getScoreMessage();
             return (
-                <div className="fixed inset-0 bg-gray-950/95 z-50 flex items-center justify-center p-6" style={{ backdropFilter: 'blur(8px)' }}>
+                <div className="fixed inset-0 bg-gray-950/95 z-[200] flex items-center justify-center p-6" style={{ backdropFilter: 'blur(8px)' }}>
                     <div className="w-full max-w-lg animate-slideUp">
                         <div className="bg-gray-900 border-[4px] border-purple-500 p-8 shadow-[8px_8px_0px_0px_rgba(168,85,247,0.5)] text-center">
                             <div className="text-6xl mb-4">{emoji}</div>
@@ -522,7 +622,7 @@ const AiAgent = ({ user, onNavigate }) => {
             const labels = ['A', 'B', 'C', 'D'];
 
             return (
-                <div className="fixed inset-0 bg-gray-950/95 z-50 flex items-center justify-center p-6" style={{ backdropFilter: 'blur(8px)' }}>
+                <div className="fixed inset-0 bg-gray-950/95 z-[200] flex items-center justify-center p-6" style={{ backdropFilter: 'blur(8px)' }}>
                     <div className="w-full max-w-2xl animate-slideUp">
                         <div className="bg-gray-900 border-[4px] border-purple-500 shadow-[8px_8px_0px_0px_rgba(168,85,247,0.5)]">
                             {/* Header */}
@@ -567,8 +667,8 @@ const AiAgent = ({ user, onNavigate }) => {
                                                 className={`w-full flex items-center gap-4 px-5 py-4 border-[3px] font-bold text-sm text-left transition-all ${optionStyle} ${!quizAnswered ? 'active:translate-y-[1px] active:translate-x-[1px] cursor-pointer' : 'cursor-default'}`}
                                             >
                                                 <span className={`w-8 h-8 flex items-center justify-center border-[2px] font-black text-xs shrink-0 ${quizAnswered && idx === q.correct ? 'border-green-400 bg-green-500 text-white' :
-                                                        quizAnswered && idx === quizSelected && idx !== q.correct ? 'border-red-400 bg-red-500 text-white' :
-                                                            'border-current'
+                                                    quizAnswered && idx === quizSelected && idx !== q.correct ? 'border-red-400 bg-red-500 text-white' :
+                                                        'border-current'
                                                     }`}>
                                                     {quizAnswered && idx === q.correct ? '✓' : quizAnswered && idx === quizSelected && idx !== q.correct ? '✕' : labels[idx]}
                                                 </span>
@@ -581,8 +681,8 @@ const AiAgent = ({ user, onNavigate }) => {
                                 {/* Explanation */}
                                 {quizAnswered && (
                                     <div className={`mt-5 p-4 border-[3px] ${quizSelected === q.correct
-                                            ? 'border-green-500 bg-green-900/30'
-                                            : 'border-orange-500 bg-orange-900/30'
+                                        ? 'border-green-500 bg-green-900/30'
+                                        : 'border-orange-500 bg-orange-900/30'
                                         } animate-slideUp`}>
                                         <div className="flex items-center gap-2 mb-2">
                                             <span className="text-lg">{quizSelected === q.correct ? '✅' : '💡'}</span>
@@ -607,6 +707,178 @@ const AiAgent = ({ user, onNavigate }) => {
                                 </div>
                             )}
                         </div>
+                    </div>
+                </div>
+            );
+        }
+
+        return null;
+    };
+
+    /* ─── Video Library Overlay Renderer ─── */
+
+    const renderVideoOverlay = () => {
+        if (videoLibraryActive && !videoGenActive) {
+            return (
+                <div className="fixed inset-0 bg-gray-950/95 z-[200] flex flex-col p-6 animate-fadeIn" style={{ backdropFilter: 'blur(8px)' }}>
+                    {/* Header */}
+                    <div className="w-full max-w-5xl mx-auto flex items-center justify-between space-x-4 mb-8">
+                        <div>
+                            <h2 className="text-3xl font-black text-white uppercase tracking-widest flex items-center gap-3">
+                                <span>🎥</span> MY VIDEO LESSONS
+                            </h2>
+                            <p className="text-gray-400 text-sm font-bold mt-1 uppercase tracking-wider">AI-Generated Personalized Micro-Lessons</p>
+                        </div>
+                        <div className="flex gap-4">
+                            <button
+                                onClick={() => setVideoGenActive(true)}
+                                className="px-6 py-3 border-[3px] border-orange-500 bg-orange-500 hover:bg-orange-400 text-black text-xs font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(249,115,22,0.5)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all"
+                            >
+                                ✨ GENERATE NEW LESSON
+                            </button>
+                            <button
+                                onClick={() => setVideoLibraryActive(false)}
+                                className="w-12 h-12 flex items-center justify-center border-[3px] border-gray-600 bg-gray-800 text-gray-300 hover:text-white hover:border-gray-400 hover:bg-gray-700 transition-all font-bold text-xl"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Library Grid */}
+                    <div className="w-full max-w-5xl mx-auto flex-1 overflow-y-auto pr-2 pb-8">
+                        {videoLibraryLoading ? (
+                            <div className="flex flex-col items-center justify-center h-64 gap-4 animate-pulse">
+                                <div className="text-4xl">⏳</div>
+                                <p className="text-white font-bold uppercase tracking-widest">Loading Library...</p>
+                            </div>
+                        ) : videoLessons.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center h-64 gap-4 bg-gray-900 border-[4px] border-gray-700 border-dashed">
+                                <div className="text-4xl opacity-50">📂</div>
+                                <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">Your library is empty. Generate your first lesson!</p>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {videoLessons.map((lesson) => (
+                                    <div key={lesson.id} className="bg-gray-900 border-[4px] border-gray-700 hover:border-orange-500 flex flex-col transition-colors group shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)]">
+                                        <div className="aspect-video bg-black relative border-b-[4px] border-gray-700 group-hover:border-orange-500 transition-colors">
+                                            <video
+                                                src={lesson.videoUrl}
+                                                controls
+                                                className="w-full h-full object-cover"
+                                                preload="metadata"
+                                            />
+                                        </div>
+                                        <div className="p-4 flex-1 flex flex-col">
+                                            <div className="text-[10px] font-black text-orange-400 uppercase tracking-widest mb-1">{lesson.topic}</div>
+                                            <h3 className="text-white font-bold text-lg mb-4 line-clamp-2 leading-snug flex-1">{lesson.title}</h3>
+                                            <div className="flex items-center justify-between mt-auto">
+                                                <span className="text-gray-500 text-[10px] uppercase font-bold">
+                                                    {lesson.createdAt ? new Date(lesson.createdAt.toDate?.() || Date.now()).toLocaleDateString() : 'Just now'}
+                                                </span>
+                                                <button
+                                                    onClick={() => handleDeleteVideo(lesson.id)}
+                                                    className="w-8 h-8 flex items-center justify-center border-[2px] border-red-900 bg-red-950 text-red-500 hover:bg-red-900 hover:text-red-300 transition-colors tooltip"
+                                                    title="Delete Video"
+                                                >
+                                                    🗑️
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        if (videoGenActive) {
+            return (
+                <div className="fixed inset-0 bg-gray-950/95 z-[210] flex items-center justify-center p-6 animate-fadeIn" style={{ backdropFilter: 'blur(8px)' }}>
+                    <div className="w-full max-w-lg animate-slideUp">
+                        {/* Step 0: Input */}
+                        {videoGenStep === 0 && (
+                            <div className="bg-gray-900 border-[4px] border-orange-500 p-8 shadow-[8px_8px_0px_0px_rgba(249,115,22,0.5)] relative">
+                                <button onClick={handleCloseVideoGen} className="absolute top-3 right-3 text-gray-400 hover:text-white text-2xl font-bold z-10">✕</button>
+                                <div className="text-center mb-6">
+                                    <div className="text-5xl mb-3">🎬</div>
+                                    <h2 className="text-2xl font-black text-white uppercase tracking-widest">NEW VIDEO LESSON</h2>
+                                    <p className="text-orange-300 text-sm mt-2 font-medium">AI will write a script and render a narrated video</p>
+                                </div>
+                                <div className="space-y-4">
+                                    <input
+                                        value={videoTopicInput}
+                                        onChange={(e) => setVideoTopicInput(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleStartVideoGeneration()}
+                                        placeholder={selectedSubject ? `Topic (or leave blank for ${selectedSubject})` : 'Enter a topic e.g. Mitochondria'}
+                                        className="w-full border-[3px] border-orange-500 bg-gray-800 text-white py-3 px-4 font-bold text-sm uppercase tracking-wide placeholder-gray-500 focus:outline-none focus:border-orange-400 transition-colors"
+                                        autoFocus
+                                    />
+                                    <button
+                                        onClick={handleStartVideoGeneration}
+                                        disabled={!videoTopicInput.trim() && !selectedSubject}
+                                        className="w-full py-4 border-[3px] border-orange-500 bg-orange-600 text-white text-sm font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(249,115,22,0.5)] hover:bg-orange-500 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                                    >
+                                        🚀 GENERATE VIDEO
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Step 1 & 2: Generating */}
+                        {(videoGenStep === 1 || videoGenStep === 2) && (
+                            <div className="bg-gray-900 border-[4px] border-orange-500 p-10 shadow-[8px_8px_0px_0px_rgba(249,115,22,0.5)] text-center relative overflow-hidden">
+                                {/* Animated scanline effect */}
+                                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-orange-500/10 to-transparent h-20 w-full animate-scanline pointer-events-none" />
+
+                                <div className="text-6xl mb-6 animate-pulse">⚙️</div>
+                                <h2 className="text-xl font-black text-white uppercase tracking-widest mb-4">
+                                    {videoGenStep === 1 ? 'Writing Script...' : 'Rendering Video...'}
+                                </h2>
+
+                                <div className="w-full bg-gray-800 h-2 mb-6 border border-gray-700">
+                                    <div className="h-full bg-orange-500 animate-pulse" style={{ width: videoGenStep === 1 ? '30%' : '80%' }}></div>
+                                </div>
+
+                                <p className="text-orange-300 text-sm font-bold uppercase tracking-wider mb-2">
+                                    {videoGenStep === 1 ? 'Gemini is drafting the scenes' : 'JSON2Video is rendering the MP4'}
+                                </p>
+
+                                {videoGenStep === 2 && (
+                                    <p className="text-gray-400 text-[10px] uppercase font-bold mt-4">
+                                        This usually takes 1-3 minutes. Please do not close this window.
+                                        <br /><br />
+                                        Status: {videoGenProgress.status || 'starting...'} (Polled {videoGenProgress.attempts}x)
+                                    </p>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Step 3: Done */}
+                        {videoGenStep === 3 && (
+                            <div className="bg-gray-900 border-[4px] border-green-500 p-6 shadow-[8px_8px_0px_0px_rgba(34,197,94,0.5)] -mt-10">
+                                <div className="text-center mb-6">
+                                    <h2 className="text-2xl font-black text-white uppercase tracking-widest text-green-400">✅ LESSON READY</h2>
+                                </div>
+                                <div className="border-[4px] border-green-500 bg-black aspect-video mb-6 relative">
+                                    {currentVideoUrl ? (
+                                        <video src={currentVideoUrl} controls autoPlay className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-red-500">Video failed to load URL.</div>
+                                    )}
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        handleCloseVideoGen();
+                                    }}
+                                    className="w-full py-4 border-[3px] border-green-500 bg-green-600 text-white text-sm font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(34,197,94,0.5)] hover:bg-green-500 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all"
+                                >
+                                    BACK TO LIBRARY
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             );
@@ -916,6 +1188,30 @@ const AiAgent = ({ user, onNavigate }) => {
                     </button>
                 </section>
 
+                {/* 🎥 Video Lessons Section */}
+                <section className="border-[4px] border-black bg-gradient-to-br from-orange-500 to-amber-600 text-white p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                    <h3 className="text-sm font-black mb-2 uppercase tracking-wide">🎥 VIDEO LESSONS</h3>
+                    <p className="text-[11px] font-medium mb-4 leading-relaxed opacity-90">
+                        AI-generated video lessons on any topic with voiceover.
+                    </p>
+                    <div className="space-y-2">
+                        <button
+                            onClick={handleOpenVideoLibrary}
+                            disabled={!apiReady}
+                            className="w-full py-3 border-[3px] border-black bg-white text-black text-[11px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            📂 MY VIDEO LIBRARY
+                        </button>
+                        <button
+                            onClick={() => { setVideoLibraryActive(true); setVideoGenActive(true); }}
+                            disabled={!apiReady}
+                            className="w-full py-3 border-[3px] border-black bg-black text-white text-[11px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] hover:bg-gray-900 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            ✨ GENERATE NEW VIDEO
+                        </button>
+                    </div>
+                </section>
+
                 {/* Quick Actions */}
                 <section className="border-[4px] border-black bg-white p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
                     <h3 className="text-sm font-black mb-3 uppercase tracking-wide">⚡ QUICK ACTIONS</h3>
@@ -944,6 +1240,7 @@ const AiAgent = ({ user, onNavigate }) => {
                             <span className="text-base">❓</span>
                             QUIZ ME
                         </button>
+
                     </div>
                 </section>
 
@@ -963,12 +1260,12 @@ const AiAgent = ({ user, onNavigate }) => {
 
             {/* ────── NOTES MODAL ────── */}
             {showNotesModal && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6 animate-fadeIn">
-                    <div className="bg-white border-[4px] border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] w-full max-w-3xl max-h-[85vh] flex flex-col animate-slideUp">
+                <div className="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-6 animate-fadeIn">
+                    <div className="bg-white border-[4px] border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] w-full max-w-4xl max-h-[85vh] flex flex-col animate-slideUp">
                         {/* Modal Header */}
                         <div className="bg-brutal-purple text-white px-6 py-4 flex items-center justify-between border-b-[4px] border-black">
-                            <h3 className="font-black text-sm uppercase tracking-widest">
-                                📄 Study Notes: {selectedSubject || 'General'} — {selectedTopic || 'Overview'}
+                            <h3 className="font-black text-sm uppercase tracking-widest flex items-center gap-2">
+                                <span>📄</span> Study Notes: {selectedSubject || 'General'} — {selectedTopic || 'Overview'}
                             </h3>
                             <button
                                 onClick={() => setShowNotesModal(false)}
@@ -979,7 +1276,7 @@ const AiAgent = ({ user, onNavigate }) => {
                         </div>
 
                         {/* Modal Body */}
-                        <div className="flex-1 overflow-y-auto p-6">
+                        <div className="flex-1 overflow-y-auto p-8 bg-white selection:bg-purple-200">
                             {notesLoading ? (
                                 <div className="flex flex-col items-center justify-center h-64 gap-4">
                                     <div className="typing-dots flex gap-2">
@@ -987,11 +1284,11 @@ const AiAgent = ({ user, onNavigate }) => {
                                         <span className="w-4 h-4 bg-brutal-purple rounded-full"></span>
                                         <span className="w-4 h-4 bg-brutal-purple rounded-full"></span>
                                     </div>
-                                    <p className="text-sm font-bold uppercase tracking-wider">Generating your notes...</p>
+                                    <p className="text-sm font-bold uppercase tracking-wider text-black">Generating your notes...</p>
                                 </div>
                             ) : (
                                 <div
-                                    className="prose-brutal text-sm leading-relaxed"
+                                    className="prose-brutal text-sm leading-relaxed max-w-none"
                                     dangerouslySetInnerHTML={{ __html: marked.parse(notesContent) }}
                                 />
                             )}
@@ -999,16 +1296,27 @@ const AiAgent = ({ user, onNavigate }) => {
 
                         {/* Modal Footer */}
                         {!notesLoading && notesContent && (
-                            <div className="px-6 py-4 border-t-[4px] border-black flex gap-3 bg-gray-50">
+                            <div className="px-6 py-5 border-t-[4px] border-black flex flex-wrap gap-4 bg-gray-50">
                                 <button
                                     onClick={handlePrintNotes}
-                                    className="flex-1 py-3 border-[3px] border-black bg-brutal-orange text-black text-[12px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-orange-300 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all"
+                                    className="flex-1 min-w-[200px] py-4 border-[3px] border-black bg-brutal-orange text-black text-[12px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-orange-300 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all"
                                 >
                                     🖨️ PRINT / SAVE AS PDF
                                 </button>
                                 <button
+                                    onClick={() => {
+                                        setVideoTopicInput(`Summary of ${selectedTopic || selectedSubject || 'these notes'}`);
+                                        setVideoLibraryActive(true);
+                                        setVideoGenActive(true);
+                                        setShowNotesModal(false);
+                                    }}
+                                    className="flex-1 min-w-[200px] py-4 border-[3px] border-black bg-black text-white text-[12px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] hover:bg-gray-800 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all"
+                                >
+                                    🎥 CREATE VIDEO LESSON
+                                </button>
+                                <button
                                     onClick={() => setShowNotesModal(false)}
-                                    className="px-6 py-3 border-[3px] border-black bg-white text-[12px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all"
+                                    className="px-8 py-4 border-[3px] border-black bg-white text-[12px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all"
                                 >
                                     CLOSE
                                 </button>
@@ -1020,6 +1328,9 @@ const AiAgent = ({ user, onNavigate }) => {
 
             {/* ────── QUIZ OVERLAY ────── */}
             {renderQuizOverlay()}
+
+            {/* ────── VIDEO LIBRARY & GEN OVERLAY ────── */}
+            {renderVideoOverlay()}
         </div>
     );
 };
