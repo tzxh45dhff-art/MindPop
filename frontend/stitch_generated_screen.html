@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MindPop Dashboard - Neo-Brutalism Edition</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brutal-green': '#A3E635',
+            'brutal-orange': '#FB923C',
+            'brutal-purple': '#A855F7',
+            'brutal-blue': '#60A5FA',
+            'brutal-yellow': '#FDE047',
+            'brutal-pink': '#F472B6',
+          },
+          borderWidth: {
+            '3': '3px',
+            '4': '4px',
+          },
+          boxShadow: {
+            'brutal': '4px 4px 0px 0px rgba(0,0,0,1)',
+            'brutal-lg': '8px 8px 0px 0px rgba(0,0,0,1)',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-typography">
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap');
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: #F3F4F6;
+    }
+    h1, h2, h3 {
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+    }
+  </style>
+<style data-purpose="ui-elements">
+    .brutal-card {
+      border: 3px solid black;
+      box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+      transition: all 0.1s ease;
+    }
+    .brutal-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
+    }
+    .brutal-btn {
+      border: 2px solid black;
+      box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+      text-transform: uppercase;
+      font-weight: bold;
+      transition: all 0.05s ease;
+    }
+    .brutal-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px 0px rgba(0,0,0,1);
+    }
+    .timer-bar {
+      height: 12px;
+      border: 2px solid black;
+      background: white;
+    }
+    .timer-fill {
+      height: 100%;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex">
+<!-- BEGIN: Sidebar Navigation -->
+<aside class="w-64 border-r-4 border-black bg-white flex flex-col h-screen sticky top-0">
+<div class="p-6 border-b-4 border-black flex items-center gap-3">
+<div class="w-10 h-10 bg-brutal-orange border-2 border-black"></div>
+<span class="text-2xl font-bold tracking-tighter">MINDPOP</span>
+</div>
+<nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+<a class="flex items-center gap-3 p-3 bg-brutal-orange border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-bold" href="#">
+<span>🏠</span> Home
+      </a>
+<a class="flex items-center gap-3 p-3 border-3 border-transparent hover:border-black hover:bg-gray-100 font-bold" href="#">
+<span>📚</span> Subjects
+      </a>
+<a class="flex items-center gap-3 p-3 border-3 border-transparent hover:border-black hover:bg-gray-100 font-bold" href="#">
+<span>📅</span> Schedule
+      </a>
+<a class="flex items-center gap-3 p-3 border-3 border-transparent hover:border-black hover:bg-gray-100 font-bold" href="#">
+<span>🗺️</span> Learn Map
+      </a>
+<a class="flex items-center gap-3 p-3 border-3 border-transparent hover:border-black hover:bg-gray-100 font-bold" href="#">
+<span>🏆</span> Leaderboard
+      </a>
+<a class="flex items-center gap-3 p-3 border-3 border-transparent hover:border-black hover:bg-gray-100 font-bold" href="#">
+<span>📈</span> Progress
+      </a>
+</nav>
+<div class="p-4 border-t-4 border-black space-y-2">
+<a class="flex items-center gap-3 p-2 font-bold hover:underline" href="#">⚙️ Settings</a>
+<a class="flex items-center gap-3 p-2 font-bold hover:underline" href="#">👤 Profile</a>
+</div>
+</aside>
+<!-- END: Sidebar Navigation -->
+<!-- BEGIN: Main Dashboard Content -->
+<main class="flex-1 bg-gray-50 flex flex-col">
+<!-- BEGIN: Top Header -->
+<header class="p-6 flex justify-between items-center bg-white border-b-4 border-black">
+<div class="flex-1 max-w-xl">
+<div class="relative">
+<input class="w-full border-3 border-black p-3 pl-10 focus:ring-0 focus:outline-none shadow-brutal font-bold" placeholder="SEARCH TOPICS..." type="text"/>
+<span class="absolute left-3 top-1/2 -translate-y-1/2">🔍</span>
+</div>
+</div>
+<div class="flex items-center gap-4 ml-6">
+<button class="w-12 h-12 border-3 border-black flex items-center justify-center bg-white shadow-brutal hover:bg-gray-100">🔔</button>
+<div class="w-12 h-12 border-3 border-black bg-brutal-yellow overflow-hidden shadow-brutal">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGyhWYkgjbLtMhLzF3REDgKLBz_nNIU3vWgJhTMXcYJDbiKR99hEqqEjgbfLuy4Pg_4K9PNRAarg83urzstDioJZ5DmLd-_SDnxeBO8vlsc5YAQ0qm18u5bzSnG_8M3hGS8oJAWDghJqtYFe6gvE3obG_t1FHrHq-9W1kfaA4BfDY4BqrFU3eGHCG29eMox4_y4DzN55q9V_N4eTsIDGX0glhrxEjiY6cfMh9gQ_7PoYvPeaQ6QJKPkyn7qK7fhk4QhuWav4BbRHQ"/>
+</div>
+</div>
+</header>
+<!-- END: Top Header -->
+<!-- BEGIN: Dashboard Layout Grid -->
+<div class="p-8 grid grid-cols-12 gap-8">
+<!-- Left Column: Main Progress & Study Items -->
+<div class="col-span-8 space-y-8">
+<!-- Current Focus Section -->
+<section data-purpose="current-focus">
+<div class="bg-brutal-green p-4 border-4 border-black shadow-brutal flex justify-between items-center">
+<h2 class="text-2xl font-bold">CURRENT FOCUS: PHYSICS</h2>
+<div class="flex items-center gap-2">
+<span class="font-bold">MODERN PHYSICS</span>
+<div class="w-32 h-4 border-2 border-black bg-white">
+<div class="h-full bg-brutal-orange w-[85%] border-r-2 border-black"></div>
+</div>
+<span class="font-bold">85%</span>
+</div>
+</div>
+</section>
+<!-- Topics Grid -->
+<section data-purpose="topics-section">
+<h3 class="text-xl font-bold mb-4">TOPICS FOR YOU</h3>
+<div class="grid grid-cols-3 gap-6">
+<div class="brutal-card bg-white p-6 h-40 flex flex-col justify-between">
+<p class="font-bold">Quantum Entanglement</p>
+<button class="brutal-btn bg-brutal-orange p-2 text-xs">Resume</button>
+</div>
+<div class="brutal-card bg-white p-6 h-40 flex flex-col justify-between">
+<p class="font-bold">Wave-Particle Duality</p>
+<button class="brutal-btn bg-brutal-green p-2 text-xs">Start</button>
+</div>
+<div class="brutal-card bg-white p-6 h-40 flex flex-col justify-between">
+<p class="font-bold">Photoelectric Effect</p>
+<button class="brutal-btn bg-brutal-blue p-2 text-xs">Review</button>
+</div>
+</div>
+</section>
+<!-- Doubt Solver Section -->
+<section data-purpose="doubt-solver">
+<div class="brutal-card bg-white overflow-hidden">
+<div class="bg-black text-white p-3 font-bold">DOUBT SOLVER: RECENTLY WRONG QUESTIONS</div>
+<div class="p-4 space-y-4">
+<div class="border-b-2 border-black border-dashed pb-3">
+<p class="font-medium">"Calculate the de Broglie wavelength of an electron..."</p>
+<span class="text-xs font-bold text-red-500">MISSED 2 HOURS AGO</span>
+</div>
+<div class="border-b-2 border-black border-dashed pb-3">
+<p class="font-medium">"Explain the uncertainty principle in your own words..."</p>
+<span class="text-xs font-bold text-red-500">MISSED YESTERDAY</span>
+</div>
+<button class="w-full p-2 brutal-btn bg-brutal-yellow text-sm">REVIEW ALL MISTAKES</button>
+</div>
+</div>
+</section>
+<!-- Quick Tutor Section -->
+<section data-purpose="quick-tutor">
+<h3 class="text-xl font-bold mb-4">QUICK TUTOR</h3>
+<div class="grid grid-cols-2 gap-6">
+<div class="brutal-card bg-brutal-blue p-8 text-center flex flex-col items-center gap-4">
+<div class="text-4xl">🤖</div>
+<h4 class="text-xl font-bold">AI AGENT</h4>
+<p class="text-sm">Instant answers to any subject query</p>
+<button class="brutal-btn bg-white px-6 py-2 w-full">ASK AI</button>
+</div>
+<div class="brutal-card bg-brutal-green p-8 text-center flex flex-col items-center gap-4">
+<div class="text-4xl">👨‍🏫</div>
+<h4 class="text-xl font-bold">LIVE TUTOR</h4>
+<p class="text-sm">Connect with a real expert now</p>
+<button class="brutal-btn bg-white px-6 py-2 w-full">GET LIVE HELP</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Sidebar Gadgets (Study Timer, Gen Station) -->
+<div class="col-span-4 space-y-8">
+<!-- Gen Station Section -->
+<section data-purpose="gen-station">
+<div class="brutal-card bg-white p-6">
+<h3 class="text-xl font-bold mb-6 border-b-4 border-black pb-2">GEN STATION</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="w-12 h-12 border-3 border-black flex items-center justify-center font-bold bg-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] group-hover:bg-brutal-pink">M</div>
+<span class="font-bold underline decoration-brutal-pink decoration-4 underline-offset-4">MIND MAPS</span>
+</div>
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="w-12 h-12 border-3 border-black flex items-center justify-center font-bold bg-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] group-hover:bg-brutal-green">Q</div>
+<span class="font-bold underline decoration-brutal-green decoration-4 underline-offset-4">QUIZZES</span>
+</div>
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="w-12 h-12 border-3 border-black flex items-center justify-center font-bold bg-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] group-hover:bg-brutal-blue">F</div>
+<span class="font-bold underline decoration-brutal-blue decoration-4 underline-offset-4">FLASHCARDS</span>
+</div>
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="w-12 h-12 border-3 border-black flex items-center justify-center font-bold bg-white shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] group-hover:bg-brutal-yellow">E</div>
+<span class="font-bold underline decoration-brutal-yellow decoration-4 underline-offset-4">EXPLANATIONS</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Study Timer Section -->
+<section data-purpose="study-timer">
+<div class="brutal-card bg-white p-6">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-xl font-bold">STUDY TIMER</h3>
+<span class="text-2xl">🔥</span>
+</div>
+<div class="space-y-4">
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-bold uppercase"><span>Focus Session</span><span>45m / 60m</span></div>
+<div class="timer-bar">
+<div class="timer-fill bg-brutal-purple w-3/4"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-bold uppercase"><span>Daily Goal</span><span>4h / 6h</span></div>
+<div class="timer-bar">
+<div class="timer-fill bg-brutal-pink w-2/3"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-bold uppercase"><span>Weekly Streak</span><span>5 Days</span></div>
+<div class="timer-bar">
+<div class="timer-fill bg-brutal-orange w-5/7"></div>
+</div>
+</div>
+<button class="w-full mt-4 brutal-btn bg-black text-white py-3">START NEW SESSION</button>
+</div>
+</div>
+</section>
+<!-- Weekly Streak Card -->
+<section data-purpose="streak-card">
+<div class="brutal-card bg-brutal-orange p-6 relative overflow-hidden">
+<div class="absolute -right-4 -top-4 text-8xl opacity-20">🔥</div>
+<h3 class="font-bold text-lg mb-2 uppercase">Weekly Streak on Fire!</h3>
+<p class="text-sm font-medium mb-4">You've studied 5 days in a row. Keep going!!</p>
+<div class="flex gap-1">
+<div class="flex-1 h-3 border-2 border-black bg-black"></div>
+<div class="flex-1 h-3 border-2 border-black bg-black"></div>
+<div class="flex-1 h-3 border-2 border-black bg-black"></div>
+<div class="flex-1 h-3 border-2 border-black bg-black"></div>
+<div class="flex-1 h-3 border-2 border-black bg-black"></div>
+<div class="flex-1 h-3 border-2 border-black bg-white"></div>
+<div class="flex-1 h-3 border-2 border-black bg-white"></div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- END: Dashboard Layout Grid -->
+</main>
+<!-- END: Main Dashboard Content -->
+</body></html>
