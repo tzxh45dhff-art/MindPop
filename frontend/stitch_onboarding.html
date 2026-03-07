@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "accent-lime": "#bef264",
+                        "accent-blue": "#7dd3fc",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Public Sans", "sans-serif"]
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                    },
+                    boxShadow: {
+                        'neo': '4px 4px 0px 0px rgba(0,0,0,1)',
+                        'neo-sm': '2px 2px 0px 0px rgba(0,0,0,1)',
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .neo-border { border: 3px solid #000; }
+        .neo-shadow { box-shadow: 4px 4px 0px 0px #000; }
+        .neo-shadow-sm { box-shadow: 2px 2px 0px 0px #000; }
+        .neo-shadow-hover:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px 0px #000; }
+        .neo-shadow-active:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px 0px #000; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex items-center justify-center">
+<!-- Sidebar Section -->
+<!-- Main Content -->
+<main class="w-full">
+<div class="max-w-4xl mx-auto p-8 md:p-12 w-full">
+<!-- Header -->
+<header class="mb-12">
+<h1 class="text-5xl md:text-6xl font-black mb-4 tracking-tight">Personalize Your Journey</h1>
+<p class="text-lg font-bold text-slate-600 dark:text-slate-400">Tailor MindPop to your academic goals and learning preferences.</p>
+</header>
+<!-- Section 1: Choose Grade -->
+<section class="mb-12">
+<h2 class="text-2xl font-black mb-6 flex items-center gap-2">
+<span class="size-8 bg-black text-white rounded-full flex items-center justify-center text-sm">1</span>
+                    Choose Grade
+                </h2>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+<button class="aspect-square bg-white dark:bg-slate-800 neo-border neo-shadow flex flex-col items-center justify-center group neo-shadow-hover neo-shadow-active">
+<span class="text-4xl font-black group-hover:scale-110 transition-transform">9</span>
+<span class="text-xs font-bold uppercase mt-2">Freshman</span>
+</button>
+<button class="aspect-square bg-accent-lime neo-border neo-shadow flex flex-col items-center justify-center group neo-shadow-hover neo-shadow-active">
+<span class="text-4xl font-black group-hover:scale-110 transition-transform">10</span>
+<span class="text-xs font-bold uppercase mt-2">Sophomore</span>
+</button>
+<button class="aspect-square bg-white dark:bg-slate-800 neo-border neo-shadow flex flex-col items-center justify-center group neo-shadow-hover neo-shadow-active">
+<span class="text-4xl font-black group-hover:scale-110 transition-transform">11</span>
+<span class="text-xs font-bold uppercase mt-2">Junior</span>
+</button>
+<button class="aspect-square bg-white dark:bg-slate-800 neo-border neo-shadow flex flex-col items-center justify-center group neo-shadow-hover neo-shadow-active">
+<span class="text-4xl font-black group-hover:scale-110 transition-transform">12</span>
+<span class="text-xs font-bold uppercase mt-2">Senior</span>
+</button>
+</div>
+</section>
+<!-- Section 2: Choose Subjects -->
+<section class="mb-12">
+<h2 class="text-2xl font-black mb-6 flex items-center gap-2">
+<span class="size-8 bg-black text-white rounded-full flex items-center justify-center text-sm">2</span>
+                    Choose Subjects
+                </h2>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+<div class="bg-accent-blue neo-border neo-shadow p-6 group cursor-pointer neo-shadow-hover neo-shadow-active">
+<span class="material-symbols-outlined text-4xl mb-4 font-bold block">science</span>
+<h3 class="text-xl font-black">Physics</h3>
+<p class="text-sm font-bold opacity-80 mt-1">Mechanics &amp; Energy</p>
+</div>
+<div class="bg-white dark:bg-slate-800 neo-border neo-shadow p-6 group cursor-pointer neo-shadow-hover neo-shadow-active">
+<span class="material-symbols-outlined text-4xl mb-4 font-bold block text-primary">science</span>
+<h3 class="text-xl font-black">Biology</h3>
+<p class="text-sm font-bold text-slate-500 mt-1">Genetics &amp; Systems</p>
+</div>
+<div class="bg-white dark:bg-slate-800 neo-border neo-shadow p-6 group cursor-pointer neo-shadow-hover neo-shadow-active">
+<span class="material-symbols-outlined text-4xl mb-4 font-bold block text-accent-lime">functions</span>
+<h3 class="text-xl font-black">Calculus</h3>
+<p class="text-sm font-bold text-slate-500 mt-1">Limits &amp; Derivatives</p>
+</div>
+<div class="bg-white dark:bg-slate-800 neo-border neo-shadow p-6 group cursor-pointer neo-shadow-hover neo-shadow-active">
+<span class="material-symbols-outlined text-4xl mb-4 font-bold block text-blue-500">menu_book</span>
+<h3 class="text-xl font-black">Literature</h3>
+<p class="text-sm font-bold text-slate-500 mt-1">Analysis &amp; Comp</p>
+</div>
+<div class="bg-primary text-white neo-border neo-shadow p-6 group cursor-pointer neo-shadow-hover neo-shadow-active">
+<span class="material-symbols-outlined text-4xl mb-4 font-bold block">history_edu</span>
+<h3 class="text-xl font-black">History</h3>
+<p class="text-sm font-bold opacity-80 mt-1">World Events</p>
+</div>
+<div class="bg-white dark:bg-slate-800 neo-border neo-shadow p-6 group cursor-pointer neo-shadow-hover neo-shadow-active">
+<span class="material-symbols-outlined text-4xl mb-4 font-bold block text-purple-500">psychology</span>
+<h3 class="text-xl font-black">Philosophy</h3>
+<p class="text-sm font-bold text-slate-500 mt-1">Logic &amp; Ethics</p>
+</div>
+</div>
+</section>
+<!-- Section 3: Learning Style -->
+<section class="mb-16">
+<h2 class="text-2xl font-black mb-6 flex items-center gap-2">
+<span class="size-8 bg-black text-white rounded-full flex items-center justify-center text-sm">3</span>
+                    Learning Style
+                </h2>
+<div class="space-y-4">
+<div class="flex items-center gap-6 bg-white dark:bg-slate-800 neo-border neo-shadow p-6 cursor-pointer neo-shadow-hover neo-shadow-active">
+<div class="size-16 bg-accent-lime border-2 border-black rounded-lg flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-3xl font-bold">visibility</span>
+</div>
+<div>
+<h3 class="text-xl font-black uppercase">Visual</h3>
+<p class="font-bold text-slate-500 text-sm">Infographics, video lectures, and mind maps.</p>
+</div>
+</div>
+<div class="flex items-center gap-6 bg-accent-blue neo-border neo-shadow p-6 cursor-pointer neo-shadow-hover neo-shadow-active">
+<div class="size-16 bg-white border-2 border-black rounded-lg flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-3xl font-bold">touch_app</span>
+</div>
+<div>
+<h3 class="text-xl font-black uppercase">Interactive</h3>
+<p class="font-bold text-slate-800 text-sm">Quizzes, flashcards, and group challenges.</p>
+</div>
+</div>
+<div class="flex items-center gap-6 bg-white dark:bg-slate-800 neo-border neo-shadow p-6 cursor-pointer neo-shadow-hover neo-shadow-active">
+<div class="size-16 bg-primary/20 border-2 border-black rounded-lg flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-3xl font-bold text-primary">menu_book</span>
+</div>
+<div>
+<h3 class="text-xl font-black uppercase">Theoretical</h3>
+<p class="font-bold text-slate-500 text-sm">In-depth readings, case studies, and papers.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Action -->
+<footer class="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t-3 border-black">
+<div class="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-slate-400">
+                    Step 1 of 3 <div class="w-24 h-4 bg-slate-200 dark:bg-slate-700 rounded-full border-2 border-black overflow-hidden"><div class="h-full bg-primary w-1/3"></div></div>
+</div>
+<button class="w-full sm:w-auto px-12 py-5 bg-primary text-white text-xl font-black neo-border neo-shadow neo-shadow-hover neo-shadow-active flex items-center justify-center gap-3">
+                    Continue <span class="material-symbols-outlined font-bold">arrow_forward</span>
+</button>
+</footer>
+</div>
+</main>
+</body></html>

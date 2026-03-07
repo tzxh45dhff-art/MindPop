@@ -81,7 +81,7 @@ const AuthModal = ({ mode: initialMode, onClose, onAuthSuccess }) => {
         const loginData = await loginRes.json();
         localStorage.setItem('mindpop_token', loginData.access_token);
         setTimeout(() => {
-          onAuthSuccess({ username, name, token: loginData.access_token });
+          onAuthSuccess({ username, name, token: loginData.access_token, isNewUser: true });
         }, 800);
       } else {
         // Signup succeeded but auto-login failed, switch to login

@@ -8,9 +8,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        "primary": "#f48c25",
-        "background-light": "#f8f7f5",
-        "background-dark": "#221910",
+        "primary": "#ec5b13",
+        "accent-lime": "#bef264",
+        "accent-blue": "#7dd3fc",
+        "background-light": "#f8f6f6",
+        "background-dark": "#221610",
         "neobeige": "#F5F5DC",
       },
       fontFamily: {
