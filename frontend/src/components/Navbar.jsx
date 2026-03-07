@@ -3,9 +3,11 @@ const Navbar = () => {
         <nav className="absolute top-0 left-0 w-full h-24 flex items-center justify-between px-8 z-50 pointer-events-none">
             {/* Left side: Logo + Brand Name */}
             <div className="flex items-center space-x-3 pointer-events-auto">
-                <div className="w-12 h-12 bg-white border-4 border-black rounded-full flex items-center justify-center text-black font-black text-2xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-transform">
-                    M
-                </div>
+                <img 
+                    src="/cube.jpeg" 
+                    alt="MindPop Logo" 
+                    className="w-16 h-16 object-contain drop-shadow-md hover:-translate-y-1 transition-transform"
+                />
                 <span className="text-3xl font-black tracking-tight text-black drop-shadow-md">
                     MindPop
                 </span>

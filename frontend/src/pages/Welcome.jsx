@@ -3,13 +3,25 @@ const Welcome = () => {
     <div className="flex h-screen w-full font-display bg-[#F1F0DE] overflow-hidden">
       {/* Left Panel */}
       <div className="relative flex-1 flex flex-col justify-center items-center z-10 w-1/2">
-        {/* Background Icons (Left) */}
-        <span className="material-symbols-outlined absolute top-[10%] left-[5%] text-6xl text-[#E3E1C5] -rotate-12 select-none">menu_book</span>
-        <span className="material-symbols-outlined absolute top-[38%] left-[20%] text-5xl text-[#E3E1C5] rotate-12 select-none">science</span>
-        <span className="material-symbols-outlined absolute top-[30%] right-[10%] text-6xl text-[#E3E1C5] rotate-45 select-none">edit</span>
-        <span className="material-symbols-outlined absolute bottom-[20%] left-[15%] text-5xl text-[#E3E1C5] -rotate-12 select-none">lightbulb</span>
-        <span className="material-symbols-outlined absolute bottom-[10%] left-[35%] text-7xl text-[#E3E1C5] select-none">psychology</span>
-        <span className="material-symbols-outlined absolute bottom-[10%] left-[30%] text-5xl text-[#E3E1C5] select-none">auto_awesome</span>
+        {/* Background Icons (Left) - Increased Density */}
+        <span className="material-symbols-outlined absolute top-[5%] left-[10%] text-5xl text-[#E3E1C5]/80 rotate-12 select-none">edit</span>
+        <span className="material-symbols-outlined absolute top-[10%] left-[5%] text-6xl text-[#E3E1C5]/90 -rotate-12 select-none">menu_book</span>
+        <span className="material-symbols-outlined absolute top-[25%] left-[25%] text-4xl text-[#E3E1C5]/60 rotate-45 select-none">science</span>
+        <span className="material-symbols-outlined absolute top-[15%] left-[45%] text-5xl text-[#E3E1C5]/70 -rotate-45 select-none">lightbulb</span>
+        
+        <span className="material-symbols-outlined absolute top-[38%] left-[20%] text-5xl text-[#E3E1C5]/80 rotate-12 select-none">science</span>
+        <span className="material-symbols-outlined absolute top-[30%] right-[10%] text-6xl text-[#E3E1C5]/90 rotate-45 select-none">edit</span>
+        <span className="material-symbols-outlined absolute top-[45%] right-[25%] text-4xl text-[#E3E1C5]/50 -rotate-12 select-none">menu_book</span>
+        <span className="material-symbols-outlined absolute top-[50%] left-[5%] text-7xl text-[#E3E1C5]/60 rotate-90 select-none">psychology</span>
+        
+        <span className="material-symbols-outlined absolute bottom-[35%] left-[10%] text-6xl text-[#E3E1C5]/70 rotate-45 select-none">school</span>
+        <span className="material-symbols-outlined absolute bottom-[25%] right-[15%] text-5xl text-[#E3E1C5]/80 -rotate-45 select-none">auto_awesome</span>
+        <span className="material-symbols-outlined absolute bottom-[20%] left-[15%] text-5xl text-[#E3E1C5]/90 -rotate-12 select-none">lightbulb</span>
+        
+        <span className="material-symbols-outlined absolute bottom-[10%] left-[35%] text-7xl text-[#E3E1C5]/80 select-none">psychology</span>
+        <span className="material-symbols-outlined absolute bottom-[5%] left-[15%] text-4xl text-[#E3E1C5]/60 rotate-12 select-none">edit</span>
+        <span className="material-symbols-outlined absolute bottom-[15%] left-[55%] text-5xl text-[#E3E1C5]/70 -rotate-12 select-none">science</span>
+        <span className="material-symbols-outlined absolute bottom-[10%] left-[30%] text-5xl text-[#E3E1C5]/90 select-none">auto_awesome</span>
 
         {/* Central Logo Box */}
         <div className="relative z-20 flex flex-col items-center justify-center bg-white border-[6px] border-black p-8 md:p-12 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] w-4/5 max-w-xl">
@@ -26,16 +38,27 @@ const Welcome = () => {
         <div className="absolute bottom-8 left-8 bg-white border-4 border-black px-6 py-2 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center gap-4 text-sm font-bold z-50">
           <a href="#" className="hover:text-primary underline">Privacy</a>
           <a href="#" className="hover:text-primary underline">Terms</a>
-          <span className="text-gray-500 font-medium">© 2024 MindPop EdTech</span>
+          <span className="text-gray-500 font-medium">© 2026 MindPop</span>
         </div>
       </div>
 
       {/* Right Panel */}
       <div className="relative flex-1 flex flex-col justify-center items-center bg-[#EF8728] z-10 w-1/2">
-        {/* Background Icons (Right) */}
-        <span className="material-symbols-outlined absolute top-[15%] right-[10%] text-8xl text-black/10 select-none">school</span>
-        <span className="material-symbols-outlined absolute bottom-[10%] right-[15%] text-8xl text-black/10 select-none">lightbulb</span>
-        <span className="material-symbols-outlined absolute bottom-[5%] left-[20%] text-7xl text-black/10 select-none">menu_book</span>
+        {/* Background Icons (Right) - Increased Density */}
+        <span className="material-symbols-outlined absolute top-[10%] right-[25%] text-6xl text-black/10 rotate-12 select-none">edit</span>
+        <span className="material-symbols-outlined absolute top-[15%] right-[10%] text-8xl text-black/15 -rotate-12 select-none">school</span>
+        <span className="material-symbols-outlined absolute top-[25%] left-[15%] text-5xl text-black/5 rotate-45 select-none">science</span>
+        <span className="material-symbols-outlined absolute top-[35%] right-[20%] text-7xl text-black/10 -rotate-45 select-none">lightbulb</span>
+        <span className="material-symbols-outlined absolute top-[45%] left-[25%] text-6xl text-black/15 rotate-90 select-none">psychology</span>
+        
+        <span className="material-symbols-outlined absolute bottom-[40%] right-[30%] text-5xl text-black/5 -rotate-12 select-none">menu_book</span>
+        <span className="material-symbols-outlined absolute bottom-[30%] left-[10%] text-6xl text-black/10 rotate-45 select-none">auto_awesome</span>
+        <span className="material-symbols-outlined absolute bottom-[20%] right-[35%] text-5xl text-black/15 -rotate-45 select-none">edit</span>
+        
+        <span className="material-symbols-outlined absolute bottom-[10%] right-[15%] text-8xl text-black/10 rotate-12 select-none">lightbulb</span>
+        <span className="material-symbols-outlined absolute bottom-[15%] left-[30%] text-4xl text-black/5 -rotate-12 select-none">science</span>
+        <span className="material-symbols-outlined absolute bottom-[5%] left-[20%] text-7xl text-black/15 rotate-45 select-none">menu_book</span>
+        <span className="material-symbols-outlined absolute bottom-[5%] right-[45%] text-6xl text-black/10 select-none">psychology</span>
 
         {/* Top Right Action Buttons removed to global Navbar */}
 
