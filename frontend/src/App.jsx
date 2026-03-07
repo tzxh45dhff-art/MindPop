@@ -8,6 +8,14 @@ import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
 import Subjects from './pages/Subjects';
 import AiAgent from './pages/AiAgent';
+import Schedule from './pages/Schedule';
+import LearnMap from './pages/LearnMap';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
+import Leaderboard from './pages/Leaderboard';
+import Progress from './pages/Progress';
+import { LanguageProvider } from './i18n/LanguageContext';
+import { ThemeProvider } from './i18n/ThemeContext';
 
 const App = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -60,8 +68,20 @@ const App = () => {
     switch (currentPage) {
       case 'subjects':
         return <Subjects user={user} />;
+      case 'schedule':
+        return <Schedule user={user} />;
+      case 'learnmap':
+        return <LearnMap onNavigate={handleNavigate} />;
       case 'ai-agent':
         return <AiAgent user={user} onNavigate={handleNavigate} />;
+      case 'profile':
+        return <Profile user={user} onNavigate={handleNavigate} />;
+      case 'leaderboard':
+        return <Leaderboard user={user} onNavigate={handleNavigate} />;
+      case 'progress':
+        return <Progress user={user} onNavigate={handleNavigate} />;
+      case 'settings':
+        return <Settings user={user} onLogout={handleLogout} />;
       default:
         return <Dashboard user={user} onNavigate={handleNavigate} />;
     }
@@ -80,21 +100,25 @@ const App = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col font-display overflow-hidden">
-      {(!user || showOnboarding) && <Bubbles />}
-      {(!user || showOnboarding) && <Navbar onOpenAuth={openAuth} user={user} onLogout={handleLogout} />}
-      <main className="flex-1 w-full min-h-screen">
-        {renderMainContent()}
-      </main>
+    <ThemeProvider>
+      <LanguageProvider>
+        <div className="relative min-h-screen w-full flex flex-col font-display overflow-hidden bg-white dark:bg-[#1a1a2e] transition-colors duration-300">
+          {(!user || showOnboarding) && <Bubbles />}
+          {(!user || showOnboarding) && <Navbar onOpenAuth={openAuth} user={user} onLogout={handleLogout} />}
+          <main className="flex-1 w-full min-h-screen">
+            {renderMainContent()}
+          </main>
 
-      {isAuthModalOpen && (
-        <AuthModal
-          mode={authMode}
-          onClose={() => setIsAuthModalOpen(false)}
-          onAuthSuccess={handleAuthSuccess}
-        />
-      )}
-    </div>
+          {isAuthModalOpen && (
+            <AuthModal
+              mode={authMode}
+              onClose={() => setIsAuthModalOpen(false)}
+              onAuthSuccess={handleAuthSuccess}
+            />
+          )}
+        </div>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 };
 
