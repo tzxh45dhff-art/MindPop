@@ -7,6 +7,7 @@ import Welcome from './pages/Welcome';
 import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
 import Subjects from './pages/Subjects';
+import AiAgent from './pages/AiAgent';
 
 const App = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -59,8 +60,10 @@ const App = () => {
     switch (currentPage) {
       case 'subjects':
         return <Subjects user={user} />;
+      case 'ai-agent':
+        return <AiAgent user={user} onNavigate={handleNavigate} />;
       default:
-        return <Dashboard user={user} />;
+        return <Dashboard user={user} onNavigate={handleNavigate} />;
     }
   };
 

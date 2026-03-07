@@ -28,8 +28,8 @@ const AppLayout = ({ children, currentPage, onNavigate }) => {
                             key={item.id}
                             onClick={() => onNavigate && onNavigate(item.id)}
                             className={`flex items-center gap-4 px-4 py-3 font-bold transition-all w-full text-left ${currentPage === item.id
-                                    ? 'bg-brutal-orange border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none'
-                                    : 'border-[3px] border-transparent hover:border-black hover:bg-gray-100'
+                                ? 'bg-brutal-orange border-[3px] border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none'
+                                : 'border-[3px] border-transparent hover:border-black hover:bg-gray-100'
                                 }`}
                         >
                             <span className="text-lg">{item.icon}</span> {item.label}

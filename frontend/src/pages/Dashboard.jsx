@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/global.css';
 
-const Dashboard = ({ user }) => {
+const Dashboard = ({ user, onNavigate }) => {
     return (
         <div className="p-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-6 pb-20">
 
@@ -91,7 +91,9 @@ const Dashboard = ({ user }) => {
                             <div className="text-4xl mb-1 mt-2">🤖</div>
                             <h4 className="text-lg font-black uppercase">AI AGENT</h4>
                             <p className="text-xs font-medium mb-4 px-4 w-4/5 leading-snug">Instant answers to any subject query</p>
-                            <button className="border-[3px] border-black bg-white px-4 py-3 w-4/5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-xs font-black uppercase tracking-widest active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all">
+                            <button
+                                onClick={() => onNavigate && onNavigate('ai-agent')}
+                                className="border-[3px] border-black bg-white px-4 py-3 w-4/5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-xs font-black uppercase tracking-widest active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all hover:bg-brutal-blue">
                                 ASK AI
                             </button>
                         </div>
