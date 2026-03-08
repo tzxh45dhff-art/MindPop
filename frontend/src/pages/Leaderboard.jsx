@@ -23,7 +23,7 @@ const Leaderboard = ({ user }) => {
         rank: 12,
         name: displayName,
         quizzes: 42,
-        score: '98.0%',
+        score: '89.0%',
         level: 'PRO'
     };
 

@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Leaderboard from './pages/Leaderboard';
 import Progress from './pages/Progress';
+import FocusSession from './pages/FocusSession';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { ThemeProvider } from './i18n/ThemeContext';
 
@@ -80,6 +81,8 @@ const App = () => {
         return <Leaderboard user={user} onNavigate={handleNavigate} />;
       case 'progress':
         return <Progress user={user} onNavigate={handleNavigate} />;
+      case 'focus-session':
+        return <FocusSession user={user} onNavigate={handleNavigate} />;
       case 'settings':
         return <Settings user={user} onLogout={handleLogout} />;
       default:

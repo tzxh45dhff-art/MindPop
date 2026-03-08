@@ -99,12 +99,13 @@ const AiAgent = ({ user, onNavigate }) => {
     useEffect(() => {
         if (apiReady) {
             try {
-                initializeChat(selectedSubject, selectedTopic);
+                const displayName = user?.name || user?.username || 'Student';
+                initializeChat(selectedSubject, selectedTopic, displayName);
             } catch {
                 // API key issue
             }
         }
-    }, [selectedSubject, selectedTopic, apiReady]);
+    }, [selectedSubject, selectedTopic, apiReady, user]);
 
     /* Speech recognition setup */
     useEffect(() => {

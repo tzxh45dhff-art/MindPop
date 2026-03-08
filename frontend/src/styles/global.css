@@ -323,10 +323,36 @@ body {
     transform: scale(1.15);
   }
 }
+
 @keyframes scanline {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(100vh);
+  }
 }
+
 .animate-scanline {
   animation: scanline 3s linear infinite;
+}
+
+/* ─── Focus Session Timer Animations ─── */
+@keyframes timerPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+.timer-pulse {
+  animation: timerPulse 1.2s ease-in-out infinite;
 }

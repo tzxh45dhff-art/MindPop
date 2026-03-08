@@ -121,6 +121,25 @@ const translations = {
     time_spent_weekly: { en: 'TIME SPENT (WEEKLY)', hi: 'समय बिताया (साप्ताहिक)', es: 'TIEMPO DEDICADO (SEMANAL)', fr: 'TEMPS PASSÉ (HEBDO)', zh: '花费时间（每周）' },
     questions_solved: { en: 'QUESTIONS SOLVED', hi: 'हल किए गए प्रश्न', es: 'PREGUNTAS RESUELTAS', fr: 'QUESTIONS RÉSOLUES', zh: '已解决问题' },
     keep_pushing: { en: 'PUSH THE LIMITS OF YOUR POTENTIAL.', hi: 'अपनी क्षमता की सीमाओं को तोड़ो।', es: '¡SUPERA LOS LÍMITES DE TU POTENCIAL!', fr: 'REPOUSSEZ VOS LIMITES.', zh: '突破你的潜力极限。' },
+
+    // ─── Focus Session ───
+    focus_session_title: { en: 'FOCUS SESSION', hi: 'फोकस सेशन', es: 'SESIÓN DE ENFOQUE', fr: 'SESSION FOCUS', zh: '专注时段' },
+    focus_time: { en: 'FOCUS TIME', hi: 'फोकस समय', es: 'TIEMPO DE ENFOQUE', fr: 'TEMPS DE FOCUS', zh: '专注时间' },
+    break_time: { en: 'BREAK TIME', hi: 'ब्रेक टाइम', es: 'TIEMPO DE DESCANSO', fr: 'PAUSE', zh: '休息时间' },
+    long_break: { en: 'LONG BREAK', hi: 'लंबा ब्रेक', es: 'DESCANSO LARGO', fr: 'LONGUE PAUSE', zh: '长休息' },
+    session_start: { en: 'START', hi: 'शुरू', es: 'INICIAR', fr: 'DÉMARRER', zh: '开始' },
+    session_pause: { en: 'PAUSE', hi: 'रुकें', es: 'PAUSAR', fr: 'PAUSE', zh: '暂停' },
+    session_resume: { en: 'RESUME', hi: 'जारी रखें', es: 'CONTINUAR', fr: 'REPRENDRE', zh: '继续' },
+    session_reset: { en: 'RESET', hi: 'रीसेट', es: 'REINICIAR', fr: 'RÉINITIALISER', zh: '重置' },
+    session_skip: { en: 'SKIP BREAK', hi: 'ब्रेक छोड़ें', es: 'SALTAR DESCANSO', fr: 'PASSER LA PAUSE', zh: '跳过休息' },
+    session_complete: { en: 'SESSION COMPLETE!', hi: 'सेशन पूरा!', es: '¡SESIÓN COMPLETA!', fr: 'SESSION TERMINÉE !', zh: '时段完成！' },
+    sessions_completed: { en: 'SESSIONS COMPLETED', hi: 'पूरे किए गए सेशन', es: 'SESIONES COMPLETADAS', fr: 'SESSIONS TERMINÉES', zh: '已完成时段' },
+    back_to_dashboard: { en: 'BACK TO DASHBOARD', hi: 'डैशबोर्ड पर वापस', es: 'VOLVER AL PANEL', fr: 'RETOUR AU TABLEAU', zh: '返回仪表板' },
+    select_subject: { en: 'SELECT SUBJECT', hi: 'विषय चुनें', es: 'SELECCIONAR MATERIA', fr: 'CHOISIR MATIÈRE', zh: '选择科目' },
+    select_duration: { en: 'SELECT DURATION', hi: 'अवधि चुनें', es: 'SELECCIONAR DURACIÓN', fr: 'CHOISIR DURÉE', zh: '选择时长' },
+    minutes_abbr: { en: 'MIN', hi: 'मिनट', es: 'MIN', fr: 'MIN', zh: '分钟' },
+    stay_focused: { en: 'STAY FOCUSED. STAY SHARP.', hi: 'ध्यान केंद्रित रखें। तेज रहें।', es: '¡CONCENTRADO Y ATENTO!', fr: 'RESTEZ CONCENTRÉ.', zh: '保持专注。保持敏锐。' },
+    great_job: { en: 'GREAT JOB! TIME FOR A BREAK.', hi: 'बढ़िया! ब्रेक का समय।', es: '¡BUEN TRABAJO! TÓMATE UN DESCANSO.', fr: 'BON TRAVAIL ! PAUSE.', zh: '做得好！休息一下。' },
 };
 
 // Language metadata for the dropdown

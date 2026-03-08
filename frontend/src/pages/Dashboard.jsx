@@ -200,7 +200,9 @@ const Dashboard = ({ user, onNavigate }) => {
                                 </div>
                             </div>
 
-                            <button className="w-full mt-6 py-4 bg-black text-white text-xs font-black uppercase tracking-widest hover:bg-gray-800 transition-colors focus:outline-none focus:ring-4 focus:ring-brutal-orange/50">
+                            <button
+                                onClick={() => onNavigate && onNavigate('focus-session')}
+                                className="w-full mt-6 py-4 bg-black text-white text-xs font-black uppercase tracking-widest hover:bg-gray-800 transition-colors focus:outline-none focus:ring-4 focus:ring-brutal-orange/50">
                                 {t('start_new_session')}
                             </button>
 

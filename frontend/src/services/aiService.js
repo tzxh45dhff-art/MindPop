@@ -24,12 +24,12 @@ const getGenAI = () => {
     return genAI;
 };
 
-const SYSTEM_PROMPT = (displayName) => `You are MindPop AI — an enthusiastic, supportive study tutor for students. you are talking to ${displayName}.
+const getSystemPrompt = (displayName) => `You are MindPop AI — an enthusiastic, supportive study tutor for students. you are talking to ${displayName || 'Student'}.
 RULES:
 • Always be encouraging and motivational. End every response with a short motivational line.
 • Keep explanations precise, clear, and easy to understand.
 • Use bullet points, numbered steps, and examples.
-• use the name ${displayName} in your responses.
+• use the name ${displayName || 'Student'} in your responses.
 • If the student shares a photo of handwritten work, read the handwriting carefully (OCR), then solve or explain.
 • When solving math/science problems, show step-by-step working.
 • Use simple language; define jargon when you must use it.
@@ -37,19 +37,9 @@ RULES:
 • Use emojis sparingly to keep the tone friendly (max 2 per response).
 • **Conversational Style**: Occasionally use natural conversational markers like "Hmm...", "Let's see...", "Aha!", or "Got it!" to make voice interactions feel more human.`;
 
-const SYSTEM_HISTORY = [
-    {
-        role: 'user',
-        parts: [{ text: 'System instructions: ' + SYSTEM_PROMPT }],
-    },
-    {
-        role: 'model',
-        parts: [{ text: "Got it! I'm MindPop AI, your study buddy. Ask me anything — let's crush it! 💪" }],
-    },
-];
-
 let currentSubject = '';
 let currentTopic = '';
+let currentDisplayName = '';
 let currentModel = null;
 
 /* ─── public API ─── */
@@ -58,11 +48,12 @@ let currentModel = null;
  * Start (or restart) a chat session.
  * Clears the conversation history.
  */
-export function initializeChat(subject, topic) {
+export function initializeChat(subject, topic, displayName) {
     const ai = getGenAI();
     currentModel = ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
     currentSubject = subject || '';
     currentTopic = topic || '';
+    currentDisplayName = displayName || '';
     chatHistory = []; // Reset conversation
     return true;
 }
@@ -75,12 +66,12 @@ function buildHistory() {
     if (currentSubject) contextNote += `\nThe student is currently studying: ${currentSubject}.`;
     if (currentTopic) contextNote += ` Focused topic: ${currentTopic}.`;
 
-    const systemHistory = contextNote
-        ? [
-            { role: 'user', parts: [{ text: 'System instructions: ' + SYSTEM_PROMPT + contextNote }] },
-            { role: 'model', parts: [{ text: "Got it! I'm MindPop AI, your study buddy. Ask me anything — let's crush it! 💪" }] },
-        ]
-        : SYSTEM_HISTORY;
+    const instructions = getSystemPrompt(currentDisplayName) + contextNote;
+
+    const systemHistory = [
+        { role: 'user', parts: [{ text: 'System instructions: ' + instructions }] },
+        { role: 'model', parts: [{ text: "Got it! I'm MindPop AI, your study buddy. Ask me anything — let's crush it! 💪" }] },
+    ];
 
     // Sliding window: keep last MAX_CONTEXT_TURNS * 2 entries (each turn = user + model)
     const maxEntries = MAX_CONTEXT_TURNS * 2;
