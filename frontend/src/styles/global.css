@@ -15,6 +15,10 @@ body {
   overflow-x: hidden;
 }
 
+html.dark body {
+  background-color: #1a1a2e;
+}
+
 /* Custom Fonts for "Mind Pop" aesthetic */
 .font-bangers {
   font-family: 'Bangers', cursive;
@@ -291,6 +295,31 @@ body {
   letter-spacing: 0.05em;
 }
 
+/* Dark mode overrides for prose-brutal */
+html.dark .prose-brutal h1,
+html.dark .prose-brutal h2,
+html.dark .prose-brutal h3 {
+  border-bottom-color: #4b5563;
+}
+
+html.dark .prose-brutal code {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+html.dark .prose-brutal blockquote {
+  background: rgba(168, 85, 247, 0.15);
+}
+
+html.dark .prose-brutal table {
+  border-color: #4b5563;
+}
+
+html.dark .prose-brutal th,
+html.dark .prose-brutal td {
+  border-color: #4b5563;
+}
+
 /* ─── Quiz Animations ─── */
 
 @keyframes quizDot {
@@ -323,10 +352,17 @@ body {
     transform: scale(1.15);
   }
 }
+
 @keyframes scanline {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(100vh);
+  }
 }
+
 .animate-scanline {
   animation: scanline 3s linear infinite;
 }

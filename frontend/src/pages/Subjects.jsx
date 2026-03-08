@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchProfileOptions } from '../services/api';
+import { useTheme } from '../i18n/ThemeContext';
 
 // Icon map – simple colored SVG-style boxes matching the mockup
 const SUBJECT_ICONS = {
@@ -46,8 +47,14 @@ const FALLBACK_SUBJECTS = [
 ];
 
 const Subjects = ({ user }) => {
+    const { isDark } = useTheme();
     const [subjects, setSubjects] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const cardBg = isDark ? 'bg-[#16213e] border-gray-600' : 'bg-white border-black';
+    const textColor = isDark ? 'text-gray-100' : 'text-black';
+    const subText = isDark ? 'text-gray-400' : 'text-gray-600';
+    const borderColor = isDark ? 'border-gray-600' : 'border-black';
 
     useEffect(() => {
         const loadSubjects = async () => {
@@ -89,7 +96,7 @@ const Subjects = ({ user }) => {
     const getIcon = (id) => SUBJECT_ICONS[id] || { emoji: '📘', bg: 'bg-gray-200' };
 
     return (
-        <div className="px-10 py-10">
+        <div className={`px-10 py-10 ${textColor}`}>
 
             {/* Heading */}
             <h1 className="text-4xl sm:text-5xl font-black uppercase leading-tight tracking-tight mb-3">
@@ -97,13 +104,13 @@ const Subjects = ({ user }) => {
             </h1>
             <div className="flex items-start gap-3 mb-10">
                 <div className="w-1 h-5 bg-brutal-orange mt-0.5 shrink-0"></div>
-                <p className="text-sm font-medium text-gray-600">Your personalized curriculum is ready for exploration.</p>
+                <p className={`text-sm font-medium ${subText}`}>Your personalized curriculum is ready for exploration.</p>
             </div>
 
             {/* Loading state */}
             {loading && (
                 <div className="flex items-center justify-center py-20">
-                    <div className="w-10 h-10 border-[4px] border-black border-t-brutal-orange animate-spin"></div>
+                    <div className={`w-10 h-10 border-[4px] ${borderColor} border-t-brutal-orange animate-spin`}></div>
                 </div>
             )}
 
@@ -115,11 +122,11 @@ const Subjects = ({ user }) => {
                         return (
                             <div
                                 key={subject.id}
-                                className="border-[3px] border-black bg-white p-6 flex flex-col justify-between shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_rgba(0,0,0,1)] transition-all group"
+                                className={`border-[3px] ${cardBg} p-6 flex flex-col justify-between shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[7px_7px_0px_0px_rgba(0,0,0,1)] transition-all group`}
                             >
                                 {/* Icon */}
                                 <div>
-                                    <div className={`w-14 h-14 ${icon.bg} border-[3px] border-black flex items-center justify-center text-2xl mb-5 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]`}>
+                                    <div className={`w-14 h-14 ${icon.bg} border-[3px] ${borderColor} flex items-center justify-center text-2xl mb-5 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]`}>
                                         {icon.emoji}
                                     </div>
 
@@ -127,13 +134,13 @@ const Subjects = ({ user }) => {
                                     <h3 className="text-lg font-black uppercase tracking-tight mb-2">{subject.title}</h3>
 
                                     {/* Description */}
-                                    <p className="text-sm text-gray-600 font-medium leading-relaxed mb-6">{subject.desc}</p>
+                                    <p className={`text-sm ${subText} font-medium leading-relaxed mb-6`}>{subject.desc}</p>
                                 </div>
 
                                 {/* Footer */}
                                 <div className="flex items-center justify-between mt-auto">
-                                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{subject.lessons} LESSONS</span>
-                                    <button className="bg-brutal-orange border-[3px] border-black px-5 py-2 text-xs font-black uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-orange-400 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all">
+                                    <span className={`text-xs font-bold ${isDark ? 'text-gray-500' : 'text-gray-400'} uppercase tracking-wider`}>{subject.lessons} LESSONS</span>
+                                    <button className="bg-brutal-orange border-[3px] border-black px-5 py-2 text-xs font-black uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:bg-orange-400 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all text-black">
                                         EXPLORE
                                     </button>
                                 </div>
@@ -147,7 +154,7 @@ const Subjects = ({ user }) => {
             {!loading && subjects.length === 0 && (
                 <div className="text-center py-20">
                     <p className="text-2xl font-black uppercase mb-2">No subjects found</p>
-                    <p className="text-sm text-gray-500 font-medium">Try adjusting your search or check your profile settings.</p>
+                    <p className={`text-sm ${subText} font-medium`}>Try adjusting your search or check your profile settings.</p>
                 </div>
             )}
         </div>

@@ -96,8 +96,8 @@ const Leaderboard = ({ user }) => {
                         ))}
 
                         {/* Current User Highlights Row */}
-                        <div className="grid grid-cols-12 bg-[#ffeacc] border-[4px] border-[#df6631] relative -m-[4px] z-10 shadow-[4px_4px_0px_0px_rgba(223,102,49,0.3)] hover:bg-[#ffe1b6] transition-colors">
-                            <div className="col-span-2 p-5 border-r-[4px] border-[#df6631] font-black text-xl flex items-center text-black">{currentUserStats.rank}</div>
+                        <div className={`grid grid-cols-12 border-[4px] border-[#df6631] relative -m-[4px] z-10 shadow-[4px_4px_0px_0px_rgba(223,102,49,0.3)] transition-colors ${isDark ? 'bg-[#3d2510] hover:bg-[#4a2d14]' : 'bg-[#ffeacc] hover:bg-[#ffe1b6]'}`}>
+                            <div className={`col-span-2 p-5 border-r-[4px] border-[#df6631] font-black text-xl flex items-center ${isDark ? 'text-gray-100' : 'text-black'}`}>{currentUserStats.rank}</div>
                             <div className="col-span-4 p-5 border-r-[4px] border-[#df6631] flex flex-col justify-center">
                                 <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 border-[3px] border-black bg-slate-200 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] overflow-hidden shrink-0">
@@ -106,12 +106,12 @@ const Leaderboard = ({ user }) => {
                                         </div>
                                     </div>
                                     <div>
-                                        <span className="font-extrabold text-[#1e2336] block leading-tight">{currentUserStats.name}</span>
+                                        <span className={`font-extrabold block leading-tight ${isDark ? 'text-gray-100' : 'text-[#1e2336]'}`}>{currentUserStats.name}</span>
                                         <span className="text-[10px] font-black text-[#df6631] uppercase tracking-widest mt-1 inline-block">{t('current_level')}: {currentUserStats.level}</span>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-span-3 p-5 border-r-[4px] border-[#df6631] font-bold flex items-center justify-center text-center text-[#1e2336]">
+                            <div className={`col-span-3 p-5 border-r-[4px] border-[#df6631] font-bold flex items-center justify-center text-center ${isDark ? 'text-gray-100' : 'text-[#1e2336]'}`}>
                                 {currentUserStats.quizzes} {t('quizzes_word')}
                             </div>
                             <div className="col-span-3 p-5 font-black flex items-center justify-end text-right text-[#df6631]">

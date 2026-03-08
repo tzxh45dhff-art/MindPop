@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTheme } from '../i18n/ThemeContext';
 
 const chapterColors = {
     yellow: 'bg-[#EBB336]',
@@ -54,6 +55,7 @@ const initialChapters = [
 ];
 
 const LearnMap = ({ onNavigate }) => {
+    const { isDark } = useTheme();
     const [chapters, setChapters] = useState(initialChapters);
 
     // Filter chapters based on status
@@ -101,26 +103,31 @@ const LearnMap = ({ onNavigate }) => {
     const totalChapters = chapters.length;
     const overallProgress = Math.round((totalCompleted / totalChapters) * 100);
 
+    const pageBg = isDark ? 'bg-[#1a1a2e]' : 'bg-[#FAF4EA]';
+    const cardBg = isDark ? 'bg-[#16213e]' : 'bg-white';
+    const borderColor = isDark ? 'border-gray-600' : 'border-black';
+    const textColor = isDark ? 'text-gray-100' : 'text-black';
+
     return (
-        <div className="min-h-full bg-[#FAF4EA] font-display flex flex-col relative overflow-x-hidden">
+        <div className={`min-h-full ${pageBg} font-display flex flex-col relative overflow-x-hidden ${textColor}`}>
 
             {/* Background Watermarks */}
-            <div className="absolute top-[15%] left-[5%] text-[15rem] leading-none text-black/[0.03] select-none pointer-events-none">💡</div>
-            <div className="absolute bottom-[25%] left-[10%] text-[15rem] leading-none text-black/[0.03] select-none pointer-events-none">🎓</div>
-            <div className="absolute bottom-[40%] right-[10%] text-[15rem] leading-none text-black/[0.03] select-none pointer-events-none">🧮</div>
+            <div className={`absolute top-[15%] left-[5%] text-[15rem] leading-none ${isDark ? 'text-white/[0.03]' : 'text-black/[0.03]'} select-none pointer-events-none`}>💡</div>
+            <div className={`absolute bottom-[25%] left-[10%] text-[15rem] leading-none ${isDark ? 'text-white/[0.03]' : 'text-black/[0.03]'} select-none pointer-events-none`}>🎓</div>
+            <div className={`absolute bottom-[40%] right-[10%] text-[15rem] leading-none ${isDark ? 'text-white/[0.03]' : 'text-black/[0.03]'} select-none pointer-events-none`}>🧮</div>
 
             {/* Top Page Sub-Header */}
-            <div className="w-full bg-white border-b-[4px] border-black flex flex-col sm:flex-row items-start sm:items-center justify-between px-8 py-5 z-20 sticky top-0">
+            <div className={`w-full ${cardBg} border-b-[4px] ${borderColor} flex flex-col sm:flex-row items-start sm:items-center justify-between px-8 py-5 z-20 sticky top-0`}>
 
                 <div className="flex flex-col items-start text-left mb-4 sm:mb-0">
                     <h1 className="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-widest leading-none">SUBJECT LEARNING PATH</h1>
-                    <p className="text-xs sm:text-sm font-bold text-gray-500 mt-2 tracking-wide">Mathematics & Logic Foundation</p>
+                    <p className={`text-xs sm:text-sm font-bold ${isDark ? 'text-gray-400' : 'text-gray-500'} mt-2 tracking-wide`}>Mathematics & Logic Foundation</p>
                 </div>
 
                 <div className="flex items-center gap-6">
                     <div className="flex items-center gap-4">
                         <span className="font-black text-sm uppercase tracking-widest">{overallProgress}% COMPLETE</span>
-                        <div className="w-32 md:w-48 h-5 border-[3px] border-black bg-white p-[2px]">
+                        <div className={`w-32 md:w-48 h-5 border-[3px] ${borderColor} ${isDark ? 'bg-[#0f3460]' : 'bg-white'} p-[2px]`}>
                             <div className="h-full bg-[#E16B3D] transition-all duration-500 ease-in-out" style={{ width: `${overallProgress}%` }}></div>
                         </div>
                     </div>
@@ -146,9 +153,9 @@ const LearnMap = ({ onNavigate }) => {
                                 <div className="absolute -top-3 -left-3 w-6 h-6 bg-black flex items-center justify-center text-white font-black text-xs rotate-12">
                                     ✓
                                 </div>
-                                <h3 className="font-black text-xs uppercase tracking-widest opacity-70 mb-1">{chapter.chapterId}</h3>
-                                <h4 className="font-black text-xl leading-tight mb-2 tracking-wide">{chapter.title}</h4>
-                                <p className="font-bold text-sm tracking-wide leading-snug">{chapter.description}</p>
+                                <h3 className="font-black text-xs uppercase tracking-widest opacity-70 mb-1 text-black">{chapter.chapterId}</h3>
+                                <h4 className="font-black text-xl leading-tight mb-2 tracking-wide text-black">{chapter.title}</h4>
+                                <p className="font-bold text-sm tracking-wide leading-snug text-black">{chapter.description}</p>
                             </div>
                         ))}
                     </div>
@@ -161,7 +168,7 @@ const LearnMap = ({ onNavigate }) => {
                     </div>
 
                     {activeChapter ? (
-                        <div className="bg-white border-[6px] border-[#E16B3D] w-full p-8 shadow-[12px_12px_0px_0px_rgba(225,107,61,0.2)]">
+                        <div className={`${cardBg} border-[6px] border-[#E16B3D] w-full p-8 shadow-[12px_12px_0px_0px_rgba(225,107,61,0.2)]`}>
                             <div className="flex justify-between items-start mb-6">
                                 <h3 className="font-black text-sm uppercase tracking-widest text-[#E16B3D]">{activeChapter.chapterId}</h3>
                                 <div className="w-8 h-8 rounded-full border-[3px] border-[#E16B3D] flex items-center justify-center">
@@ -169,8 +176,8 @@ const LearnMap = ({ onNavigate }) => {
                                 </div>
                             </div>
 
-                            <h4 className="font-black text-4xl leading-[1.1] mb-4 tracking-tight text-gray-900">{activeChapter.title}</h4>
-                            <p className="font-bold text-lg text-gray-700 leading-relaxed tracking-wide mb-10">
+                            <h4 className={`font-black text-4xl leading-[1.1] mb-4 tracking-tight ${isDark ? 'text-gray-100' : 'text-gray-900'}`}>{activeChapter.title}</h4>
+                            <p className={`font-bold text-lg ${isDark ? 'text-gray-300' : 'text-gray-700'} leading-relaxed tracking-wide mb-10`}>
                                 {activeChapter.description}
                             </p>
 
@@ -179,7 +186,7 @@ const LearnMap = ({ onNavigate }) => {
                                     <span className="font-black text-xs uppercase tracking-widest">CURRENT PROGRESS</span>
                                     <span className="font-black text-lg">{activeChapter.progress}%</span>
                                 </div>
-                                <div className="w-full h-5 border-[3px] border-black bg-white mb-6 p-[2px]">
+                                <div className={`w-full h-5 border-[3px] ${borderColor} ${isDark ? 'bg-[#0f3460]' : 'bg-white'} mb-6 p-[2px]`}>
                                     <div
                                         className="h-full bg-[#E16B3D] transition-all duration-500 ease-in-out"
                                         style={{ width: `${activeChapter.progress}%` }}
@@ -187,29 +194,29 @@ const LearnMap = ({ onNavigate }) => {
                                 </div>
                                 <button
                                     onClick={handleContinueLesson}
-                                    className="w-full bg-black text-white font-black text-xl py-4 tracking-widest uppercase hover:bg-gray-800 transition-colors focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-black"
+                                    className={`w-full ${isDark ? 'bg-gray-100 text-black hover:bg-white' : 'bg-black text-white hover:bg-gray-800'} font-black text-xl py-4 tracking-widest uppercase transition-colors focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-black`}
                                 >
                                     CONTINUE LESSON
                                 </button>
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-white border-[6px] border-[#E16B3D] w-full p-12 text-center">
+                        <div className={`${cardBg} border-[6px] border-[#E16B3D] w-full p-12 text-center`}>
                             <h4 className="font-black text-3xl leading-[1.1] mb-4 tracking-tight">Path Completed!</h4>
-                            <p className="font-bold text-lg text-gray-700">You've finished all current topics.</p>
+                            <p className={`font-bold text-lg ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>You've finished all current topics.</p>
                         </div>
                     )}
                 </div>
 
                 {/* Column 3: Topics To Cover */}
                 <div className="flex flex-col gap-6 w-full lg:w-[320px]">
-                    <div className="bg-[#D6DEE5] text-black px-4 py-2 self-end transform rotate-2">
+                    <div className={`${isDark ? 'bg-[#0f3460]' : 'bg-[#D6DEE5]'} ${isDark ? 'text-gray-100' : 'text-black'} px-4 py-2 self-end transform rotate-2`}>
                         <h2 className="font-black text-lg tracking-widest uppercase">TOPICS TO COVER</h2>
                     </div>
 
                     <div className="flex flex-col gap-5 relative">
                         {/* Connecting Line */}
-                        <div className="absolute right-[30px] top-4 bottom-4 w-[4px] border-l-[4px] border-dashed border-gray-400 -z-10"></div>
+                        <div className={`absolute right-[30px] top-4 bottom-4 w-[4px] border-l-[4px] border-dashed ${isDark ? 'border-gray-500' : 'border-gray-400'} -z-10`}></div>
 
                         {pendingChapters.map((chapter) => (
                             <div key={chapter.id} className={`${chapterColors[chapter.color]} border-[4px] border-dashed border-black p-5 relative`}>
@@ -224,32 +231,32 @@ const LearnMap = ({ onNavigate }) => {
             </div>
 
             {/* Bottom Stats Footer */}
-            <div className="w-full bg-white border-t-[4px] border-black grid grid-cols-2 md:grid-cols-4 z-10">
-                <div className="p-6 border-r-[4px] border-b-[4px] md:border-b-0 border-black flex items-center justify-center gap-4 hover:bg-gray-50 transition-colors">
+            <div className={`w-full ${cardBg} border-t-[4px] ${borderColor} grid grid-cols-2 md:grid-cols-4 z-10`}>
+                <div className={`p-6 border-r-[4px] border-b-[4px] md:border-b-0 ${borderColor} flex items-center justify-center gap-4 ${isDark ? 'hover:bg-[#0f3460]' : 'hover:bg-gray-50'} transition-colors`}>
                     <span className="text-4xl text-[#E16B3D]">⏱️</span>
                     <div>
-                        <div className="font-black text-[10px] uppercase tracking-widest text-black mb-0.5">STUDY TIME</div>
+                        <div className="font-black text-[10px] uppercase tracking-widest mb-0.5">STUDY TIME</div>
                         <div className="font-black text-xl tracking-tight leading-none">12.5 Hours</div>
                     </div>
                 </div>
-                <div className="p-6 border-b-[4px] md:border-b-0 md:border-r-[4px] border-black flex items-center justify-center gap-4 hover:bg-gray-50 transition-colors">
+                <div className={`p-6 border-b-[4px] md:border-b-0 md:border-r-[4px] ${borderColor} flex items-center justify-center gap-4 ${isDark ? 'hover:bg-[#0f3460]' : 'hover:bg-gray-50'} transition-colors`}>
                     <span className="text-4xl text-[#7AC6ED]">🏅</span>
                     <div>
-                        <div className="font-black text-[10px] uppercase tracking-widest text-black mb-0.5">ACHIEVEMENTS</div>
+                        <div className="font-black text-[10px] uppercase tracking-widest mb-0.5">ACHIEVEMENTS</div>
                         <div className="font-black text-xl tracking-tight leading-none">8 Badges</div>
                     </div>
                 </div>
-                <div className="p-6 border-r-[4px] border-black flex items-center justify-center gap-4 hover:bg-gray-50 transition-colors">
+                <div className={`p-6 border-r-[4px] ${borderColor} flex items-center justify-center gap-4 ${isDark ? 'hover:bg-[#0f3460]' : 'hover:bg-gray-50'} transition-colors`}>
                     <span className="text-4xl text-[#EBB336]">⚡</span>
                     <div>
-                        <div className="font-black text-[10px] uppercase tracking-widest text-black mb-0.5">CURRENT STREAK</div>
+                        <div className="font-black text-[10px] uppercase tracking-widest mb-0.5">CURRENT STREAK</div>
                         <div className="font-black text-xl tracking-tight leading-none">5 Days</div>
                     </div>
                 </div>
-                <div className="p-6 flex items-center justify-center gap-4 hover:bg-gray-50 transition-colors">
+                <div className={`p-6 flex items-center justify-center gap-4 ${isDark ? 'hover:bg-[#0f3460]' : 'hover:bg-gray-50'} transition-colors`}>
                     <span className="text-4xl text-[#8D46EE]">📚</span>
                     <div>
-                        <div className="font-black text-[10px] uppercase tracking-widest text-black mb-0.5">QUESTIONS SOLVED</div>
+                        <div className="font-black text-[10px] uppercase tracking-widest mb-0.5">QUESTIONS SOLVED</div>
                         <div className="font-black text-xl tracking-tight leading-none">142</div>
                     </div>
                 </div>
