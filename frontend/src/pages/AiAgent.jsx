@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { marked } from 'marked';
+import { useTheme } from '../i18n/ThemeContext';
 import {
     initializeChat,
     sendMessage,
@@ -38,6 +39,7 @@ const MOTIVATIONAL_TIPS = [
 
 /* ─── Component ─── */
 const AiAgent = ({ user, onNavigate }) => {
+    const { isDark } = useTheme();
     /* State */
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState('');
@@ -933,7 +935,7 @@ const AiAgent = ({ user, onNavigate }) => {
 
     /* ─── JSX ─── */
     return (
-        <div className="w-full h-full flex overflow-hidden" style={{ height: 'calc(100vh - 85px)' }}>
+        <div className={`w-full h-full flex overflow-hidden ${isDark ? 'bg-[#1a1a2e]' : ''}`} style={{ height: 'calc(100vh - 85px)' }}>
             {/* ────── LEFT: Chat Area (fills full height) ────── */}
             <div className="flex-1 flex flex-col min-w-0 p-4 lg:p-6 gap-3">
                 {/* Header Bar */}
@@ -980,14 +982,14 @@ const AiAgent = ({ user, onNavigate }) => {
                 {/* Messages Area — scrolls ONLY here */}
                 <div
                     ref={chatContainerRef}
-                    className="flex-1 border-[4px] border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-y-auto p-5"
+                    className={`flex-1 border-[4px] ${isDark ? 'border-gray-600 bg-[#16213e]' : 'border-black bg-white'} shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] overflow-y-auto p-5`}
                     style={{ minHeight: 0 }}
                 >
                     {messages.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-center gap-4 opacity-70">
                             <div className="text-6xl">🤖</div>
-                            <h3 className="text-xl font-black uppercase tracking-wide">Hey{user?.name ? `, ${user.name}` : ''}! I'm MindPop AI</h3>
-                            <p className="text-sm font-medium max-w-md leading-relaxed">
+                            <h3 className={`text-xl font-black uppercase tracking-wide ${isDark ? 'text-gray-100' : ''}`}>Hey{user?.name ? `, ${user.name}` : ''}! I'm MindPop AI</h3>
+                            <p className={`text-sm font-medium max-w-md leading-relaxed ${isDark ? 'text-gray-300' : ''}`}>
                                 Your personal study assistant. Ask me anything — text a question,
                                 upload a photo of your notes, or use voice input. I'll help you understand
                                 any topic with clear, step-by-step explanations!
@@ -997,7 +999,7 @@ const AiAgent = ({ user, onNavigate }) => {
                                     <button
                                         key={i}
                                         onClick={() => { setInputText(q); inputRef.current?.focus(); }}
-                                        className="border-[3px] border-black bg-gray-50 hover:bg-brutal-blue p-3 text-[11px] font-bold text-left shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all uppercase tracking-wide"
+                                        className={`border-[3px] ${isDark ? 'border-gray-600 bg-[#0f3460] text-gray-200 hover:bg-[#1a1a2e]' : 'border-black bg-gray-50 hover:bg-brutal-blue'} p-3 text-[11px] font-bold text-left shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all uppercase tracking-wide`}
                                     >
                                         {q}
                                     </button>
@@ -1029,7 +1031,7 @@ const AiAgent = ({ user, onNavigate }) => {
 
                 {/* Image Preview */}
                 {imagePreview && (
-                    <div className="border-[3px] border-black bg-white p-3 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3 shrink-0">
+                    <div className={`border-[3px] ${isDark ? 'border-gray-600 bg-[#16213e] text-gray-200' : 'border-black bg-white'} p-3 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] flex items-center gap-3 shrink-0`}>
                         <img src={imagePreview} alt="Preview" className="h-14 w-14 object-cover border-[2px] border-black" />
                         <span className="text-xs font-bold flex-1">Image attached — will be analyzed with your message</span>
                         <button
@@ -1047,9 +1049,9 @@ const AiAgent = ({ user, onNavigate }) => {
                     <button
                         onClick={toggleListening}
                         disabled={!recognitionRef.current}
-                        className={`w-11 h-11 border-[3px] border-black flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all shrink-0 ${isListening
+                        className={`w-11 h-11 border-[3px] ${isDark ? 'border-gray-600' : 'border-black'} flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all shrink-0 ${isListening
                             ? 'bg-brutal-pink pulse-mic'
-                            : 'bg-white hover:bg-gray-100'
+                            : isDark ? 'bg-[#16213e] hover:bg-[#1a1a2e]' : 'bg-white hover:bg-gray-100'
                             } ${!recognitionRef.current ? 'opacity-40 cursor-not-allowed' : ''}`}
                         title={recognitionRef.current ? 'Voice input' : 'Speech recognition not supported'}
                     >
@@ -1059,7 +1061,7 @@ const AiAgent = ({ user, onNavigate }) => {
                     {/* Photo Button */}
                     <button
                         onClick={() => fileInputRef.current?.click()}
-                        className="w-11 h-11 border-[3px] border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all shrink-0"
+                        className={`w-11 h-11 border-[3px] ${isDark ? 'border-gray-600 bg-[#16213e] hover:bg-[#1a1a2e]' : 'border-black bg-white hover:bg-gray-100'} flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all shrink-0`}
                         title="Upload image (photo of handwritten notes, diagrams, etc.)"
                     >
                         📷
@@ -1076,7 +1078,7 @@ const AiAgent = ({ user, onNavigate }) => {
                     <button
                         onClick={handleImageSolution}
                         disabled={!inputText.trim() || isLoading}
-                        className="w-11 h-11 border-[3px] border-black bg-white flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100 active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+                        className={`w-11 h-11 border-[3px] ${isDark ? 'border-gray-600 bg-[#16213e] hover:bg-[#1a1a2e]' : 'border-black bg-white hover:bg-gray-100'} flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all shrink-0 disabled:opacity-40 disabled:cursor-not-allowed`}
                         title="Generate diagram / visual solution"
                     >
                         🎨
@@ -1089,7 +1091,7 @@ const AiAgent = ({ user, onNavigate }) => {
                         onChange={(e) => setInputText(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="ASK ANYTHING..."
-                        className="flex-1 border-[4px] border-black py-2.5 px-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-bold text-sm tracking-wide uppercase placeholder-slate-400 focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none transition-all min-w-0"
+                        className={`flex-1 border-[4px] ${isDark ? 'border-gray-600 bg-[#16213e] text-gray-100 placeholder-gray-500' : 'border-black bg-white placeholder-slate-400'} py-2.5 px-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] font-bold text-sm tracking-wide uppercase focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-none transition-all min-w-0`}
                         disabled={isLoading}
                     />
 
@@ -1105,18 +1107,18 @@ const AiAgent = ({ user, onNavigate }) => {
             </div>
 
             {/* ────── RIGHT: Controls Sidebar ────── */}
-            <div className="w-[320px] shrink-0 border-l-[4px] border-black overflow-y-auto p-4 space-y-4 hidden lg:block bg-gray-50">
+            <div className={`w-[320px] shrink-0 border-l-[4px] ${isDark ? 'border-gray-600 bg-[#0f3460]' : 'border-black bg-gray-50'} overflow-y-auto p-4 space-y-4 hidden lg:block`}>
 
                 {/* Subject & Topic Selector */}
-                <section className="border-[4px] border-black bg-white p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                <section className={`border-[4px] ${isDark ? 'border-gray-600 bg-[#16213e] text-gray-100' : 'border-black bg-white'} p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]`}>
                     <h3 className="text-sm font-black mb-3 uppercase tracking-wide">📚 STUDY CONTEXT</h3>
-                    <div className="h-[2px] w-full bg-black mb-4" />
+                    <div className={`h-[2px] w-full ${isDark ? 'bg-gray-600' : 'bg-black'} mb-4`} />
 
                     <label className="text-[11px] font-bold uppercase tracking-wider block mb-1">Subject</label>
                     <select
                         value={selectedSubject}
                         onChange={(e) => { setSelectedSubject(e.target.value); setSelectedTopic(''); }}
-                        className="w-full border-[3px] border-black py-2 px-3 font-bold text-sm uppercase mb-3 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] focus:outline-none bg-white"
+                        className={`w-full border-[3px] ${isDark ? 'border-gray-600 bg-[#0f3460] text-gray-100' : 'border-black bg-white'} py-2 px-3 font-bold text-sm uppercase mb-3 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] focus:outline-none`}
                     >
                         <option value="">All Subjects</option>
                         {SUBJECTS.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -1127,7 +1129,7 @@ const AiAgent = ({ user, onNavigate }) => {
                         value={selectedTopic}
                         onChange={(e) => setSelectedTopic(e.target.value)}
                         disabled={!selectedSubject}
-                        className="w-full border-[3px] border-black py-2 px-3 font-bold text-sm uppercase shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] focus:outline-none bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                        className={`w-full border-[3px] ${isDark ? 'border-gray-600 bg-[#0f3460] text-gray-100' : 'border-black bg-white'} py-2 px-3 font-bold text-sm uppercase shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                         <option value="">All Topics</option>
                         {(TOPIC_MAP[selectedSubject] || []).map((t) => <option key={t} value={t}>{t}</option>)}
@@ -1135,9 +1137,9 @@ const AiAgent = ({ user, onNavigate }) => {
                 </section>
 
                 {/* Output Mode */}
-                <section className="border-[4px] border-black bg-white p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                <section className={`border-[4px] ${isDark ? 'border-gray-600 bg-[#16213e] text-gray-100' : 'border-black bg-white'} p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]`}>
                     <h3 className="text-sm font-black mb-3 uppercase tracking-wide">🔊 OUTPUT MODE</h3>
-                    <div className="h-[2px] w-full bg-black mb-4" />
+                    <div className={`h-[2px] w-full ${isDark ? 'bg-gray-600' : 'bg-black'} mb-4`} />
                     <div className="flex gap-2">
                         {[
                             { id: 'text', label: '📝 TEXT', color: 'bg-brutal-blue' },
@@ -1152,7 +1154,7 @@ const AiAgent = ({ user, onNavigate }) => {
                                 }}
                                 className={`flex-1 py-2 border-[3px] border-black text-[10px] font-black uppercase tracking-wider transition-all ${outputMode === mode.id
                                     ? `${mode.color} shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]`
-                                    : 'bg-white hover:bg-gray-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
+                                    : `${isDark ? 'bg-[#0f3460] hover:bg-[#1a1a2e]' : 'bg-white hover:bg-gray-100'} shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]`
                                     } active:translate-y-[2px] active:translate-x-[2px] active:shadow-none`}
                             >
                                 {mode.label}
@@ -1214,9 +1216,9 @@ const AiAgent = ({ user, onNavigate }) => {
                 </section>
 
                 {/* Quick Actions */}
-                <section className="border-[4px] border-black bg-white p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
+                <section className={`border-[4px] ${isDark ? 'border-gray-600 bg-[#16213e] text-gray-100' : 'border-black bg-white'} p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]`}>
                     <h3 className="text-sm font-black mb-3 uppercase tracking-wide">⚡ QUICK ACTIONS</h3>
-                    <div className="h-[2px] w-full bg-black mb-4" />
+                    <div className={`h-[2px] w-full ${isDark ? 'bg-gray-600' : 'bg-black'} mb-4`} />
                     <div className="space-y-2">
                         {[
                             { icon: '📖', label: 'EXPLAIN A CONCEPT', prompt: 'Explain the concept of ' },
@@ -1226,7 +1228,7 @@ const AiAgent = ({ user, onNavigate }) => {
                             <button
                                 key={i}
                                 onClick={() => { setInputText(action.prompt); inputRef.current?.focus(); }}
-                                className="w-full flex items-center gap-3 px-3 py-2.5 border-[3px] border-black bg-gray-50 hover:bg-brutal-yellow font-bold text-[10px] uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all text-left"
+                                className={`w-full flex items-center gap-3 px-3 py-2.5 border-[3px] ${isDark ? 'border-gray-600 bg-[#0f3460] hover:bg-[#1a1a2e]' : 'border-black bg-gray-50 hover:bg-brutal-yellow'} font-bold text-[10px] uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all text-left`}
                             >
                                 <span className="text-base">{action.icon}</span>
                                 {action.label}
